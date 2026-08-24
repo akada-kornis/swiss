@@ -2543,7 +2543,9 @@
       "isPrime": true,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "eAdmin"
+      ]
     },
     {
       "id": 2769,
@@ -7693,7 +7695,9 @@
       "isPrime": true,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "eAdmin"
+      ]
     },
     {
       "id": 5749,
@@ -19931,10 +19935,8 @@
       "expectedPopulation": 1897,
       "receivedPopulation": 2052,
       "receivedOn": "2026-07-01 19:20:24",
-      "comment": "Sufficient quality, data accepted",
-      "echVersion": "2.1",
-     
-... 59965 bytes omitted ...
+      "comment": "Sufficient quality, 
+... 60013 bytes omitted ...
 ucts": []
     },
     {
