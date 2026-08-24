@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Prime Communes">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d52b1e"/><stop offset="1" stop-color="#8e1315"/></linearGradient></defs>
+  <rect width="64" height="64" rx="14" fill="url(#g)"/>
+  <path d="M7 12h15V7h6v5h15v6H28v15h-6V18H7z" fill="#fff" opacity=".18"/>
+  <circle cx="39" cy="14" r="5.5" fill="#fff"/>
+  <path fill="#ff531f" d="M18 29h8c6 0 10-2 13-6l3-4h6v42H36V34c0-4-2-5-7-5H18z"/>
+</svg>
