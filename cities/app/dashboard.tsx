@@ -19,6 +19,7 @@ type DatabaseMunicipality = {
   products: string[] | null;
 };
 const number = new Intl.NumberFormat("fr-CH");
+const percent = new Intl.NumberFormat("fr-CH", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const supabaseUrl = "https://ozdvmllgxduzquiujcbg.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96ZHZtbGxneGR1enF1aXVqY2JnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1NzkwNTIsImV4cCI6MjEwMzE1NTA1Mn0.mVT0_dqcpAzb3QxmC5xDmB8bq7RZrpDd5dpvnGKPaTw";
 const supplierChoices = ["Prime", "Data", "Ofisa", "T2i", "SIACG", "OBT", "Talus", "Etic@SIEN", "Ciges"];
@@ -100,14 +101,16 @@ export default function Dashboard() {
   const stats = useMemo(() => {
     const over10k = municipalities.filter((item) => item.expectedPopulation >= 10_000);
     const prime = municipalities.filter((item) => item.isPrime);
-    return { over10k: over10k.length, over10kPopulation: over10k.reduce((sum, item) => sum + item.expectedPopulation, 0), prime: prime.length, primePopulation: prime.reduce((sum, item) => sum + item.expectedPopulation, 0), issues: municipalities.filter((item) => item.deliveryStatus !== "accepted").length };
+    const over10kPopulation = over10k.reduce((sum, item) => sum + item.expectedPopulation, 0);
+    const totalPopulation = municipalities.reduce((sum, item) => sum + item.expectedPopulation, 0);
+    return { over10k: over10k.length, over10kPopulation, over10kShare: municipalities.length ? over10k.length / municipalities.length * 100 : 0, over10kPopulationShare: totalPopulation ? over10kPopulation / totalPopulation * 100 : 0, prime: prime.length, primePopulation: prime.reduce((sum, item) => sum + item.expectedPopulation, 0), issues: municipalities.filter((item) => item.deliveryStatus !== "accepted").length };
   }, [municipalities]);
   const reset = () => { setQuery(""); setCanton("Tous"); setSoftware("Tous"); setPrimeOnly(false); setEadminOnly(false); setIssuesOnly(false); };
 
   return <main className="app-shell">
     <div className="ambient ambient-one" /><div className="ambient ambient-two" />
     <header className="topbar">
-      <img src="/prime-logo.png" className="brand" alt="Prime technologies" />
+      <img src="/prime-logo-negative.svg" className="brand" alt="Prime technologies" />
       <nav className="nav-tabs" aria-label="Navigation principale"><button className="nav-tab active">Vue d’ensemble</button><button className="nav-tab">Communes</button><button className="nav-tab">Analyses</button></nav>
       <button className="sync-state" onClick={() => void loadData()} disabled={refreshing} title="Recharger les données depuis Supabase"><span /> {refreshing ? "Actualisation…" : `Données au ${data?.meta.referenceDate ? new Date(`${data.meta.referenceDate}T00:00:00`).toLocaleDateString("fr-CH") : "—"}`} · {dataSource === "fallback" ? "copie locale" : "base live"}</button>
     </header>
@@ -115,7 +118,7 @@ export default function Dashboard() {
       <div className="intro-row"><div><p className="eyebrow">Marché suisse · Delimo P99</p><h1>Les communes.<br /><span>Enfin lisibles.</span></h1></div><p className="intro-copy">Une vue unique du marché communal suisse : population, qualité des livraisons, logiciels et opportunités.</p></div>
       <section className="kpi-grid" aria-label="Indicateurs clés">
         <article className="kpi-card hero-kpi"><div className="kpi-top"><span className="kpi-label">Population couverte</span><span className="kpi-country"><img className="swiss-mark" src="/swiss-mark.svg" alt="Suisse" /><span className="kpi-badge">100%</span></span></div><strong>{data ? number.format(data.meta.expectedPopulation) : "—"}</strong><p>habitants attendus · {data?.meta.municipalityCount ?? "—"} communes</p><div className="sparkline"><i /><i /><i /><i /><i /><i /><i /></div></article>
-        <article className="kpi-card"><span className="kpi-label">Communes ≥ 10’000</span><strong>{stats.over10k}</strong><p>{number.format(stats.over10kPopulation)} habitants · 49,5% du pays</p></article>
+        <article className="kpi-card"><div className="kpi-top"><span className="kpi-label">Communes ≥ 10’000</span><span className="kpi-badge">{percent.format(stats.over10kShare)}%</span></div><strong>{stats.over10k}</strong><p>{number.format(stats.over10kPopulation)} habitants · {percent.format(stats.over10kPopulationShare)}% du pays</p></article>
         <article className="kpi-card prime-card"><div className="kpi-top"><span className="kpi-label">Clients Prime</span><img className="prime-one" src="/prime-one-negative.png" alt="Prime" /></div><strong>{stats.prime}</strong><p>{number.format(stats.primePopulation)} habitants identifiés</p></article>
         <button className={`kpi-card alert-card ${ofsMode ? "ofs-active" : ""}`} onClick={() => { setOfsMode(!ofsMode); if (ofsMode) setIssuesOnly(false); }}><span className="kpi-label">Contrôle OFS</span><strong>{ofsMode ? stats.issues : "Ouvrir"}</strong><p>{ofsMode ? "livraisons à surveiller" : "Afficher les statuts Delimo"} <span>→</span></p></button>
       </section>
