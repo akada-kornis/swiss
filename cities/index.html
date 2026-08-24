@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Prime Communes</title>
+  <meta name="description" content="Observatoire du marché communal suisse par Prime technologies.">
+  <link rel="icon" href="public/favicon.svg">
+  <link rel="stylesheet" href="app/globals.css">
+</head>
+<body>
+<main class="app-shell">
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <header class="topbar">
+    <img src="public/prime-logo.png" class="brand" alt="Prime technologies">
+    <nav class="nav-tabs"><button class="nav-tab active">Vue d’ensemble</button><button class="nav-tab">Communes</button><button class="nav-tab">Analyses</button></nav>
+    <div class="sync-state"><span></span>Données au 30.06.2026</div>
+  </header>
+  <section class="workspace">
+    <div class="intro-row"><div><p class="eyebrow">Marché suisse · Delimo P99</p><h1>Les communes.<br><span>Enfin lisibles.</span></h1></div><p class="intro-copy">Une vue unique du marché communal suisse : population, qualité des livraisons, logiciels et opportunités.</p></div>
+    <section class="kpi-grid">
+      <article class="kpi-card hero-kpi"><div class="kpi-top"><span class="kpi-label">Population couverte</span><span class="kpi-badge">100%</span></div><strong id="population">—</strong><p><span id="communeCount">—</span> communes</p><div class="sparkline"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+      <article class="kpi-card"><span class="kpi-label">Communes ≥ 10’000</span><strong id="over10k">—</strong><p><span id="over10kPop">—</span> habitants</p></article>
+      <article class="kpi-card prime-card"><div class="kpi-top"><span class="kpi-label">Clients Prime</span><span class="prime-mark">P</span></div><strong id="prime">—</strong><p><span id="primePop">—</span> habitants identifiés</p></article>
+      <button class="kpi-card alert-card" id="issuesCard"><span class="kpi-label">Livraisons à surveiller</span><strong id="issues">—</strong><p>statut différent de « accepté » <span>Voir →</span></p></button>
+    </section>
+    <section class="data-panel">
+      <div class="panel-heading"><div><p class="eyebrow">Explorateur</p><h2>2’110 communes, une seule vue</h2></div><button class="ghost-button" id="exportBtn">Exporter la sélection</button></div>
+      <div class="filters">
+        <label class="search"><span>⌕</span><input id="query" placeholder="Rechercher une commune, un logiciel…"></label>
+        <label><span>Canton</span><select id="canton"><option>Tous</option></select></label>
+        <label><span>Logiciel</span><select id="software"><option>Tous</option></select></label>
+        <button class="filter-toggle" id="primeOnly">Clients Prime</button><button class="filter-toggle" id="issuesOnly">À surveiller</button>
+      </div>
+      <div class="result-line"><strong id="resultCount">0</strong> résultats <button id="reset">Réinitialiser</button></div>
+      <div class="table-wrap"><table><thead><tr><th>État</th><th>Commune</th><th>Canton</th><th>Population</th><th>Logiciel</th><th>Intégrateur</th><th>Erreur EWID</th><th></th></tr></thead><tbody id="rows"></tbody></table><p class="table-limit" id="limit"></p></div>
+    </section>
+  </section>
+</main>
+<div id="drawerRoot"></div>
+<script>
+const fmt=new Intl.NumberFormat('fr-CH');let all=[],primeOnly=false,issuesOnly=false;
+const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+fetch('public/data/municipalities.json').then(r=>r.json()).then(data=>{all=data.municipalities;$('population').textContent=fmt.format(data.meta.expectedPopulation);$('communeCount').textContent=fmt.format(data.meta.municipalityCount);const over=all.filter(x=>x.expectedPopulation>=10000),prime=all.filter(x=>x.isPrime),issues=all.filter(x=>x.deliveryStatus!=='accepted');$('over10k').textContent=over.length;$('over10kPop').textContent=fmt.format(over.reduce((s,x)=>s+x.expectedPopulation,0));$('prime').textContent=prime.length;$('primePop').textContent=fmt.format(prime.reduce((s,x)=>s+x.expectedPopulation,0));$('issues').textContent=issues.length;fill('canton',[...new Set(all.map(x=>x.canton))].sort());fill('software',[...new Set(all.map(x=>x.software).filter(Boolean))].sort());render();}).catch(()=>{$('rows').innerHTML='<tr><td colspan="8">Impossible de charger les données.</td></tr>'});
+function fill(id,values){values.forEach(v=>$(id).insertAdjacentHTML('beforeend',`<option>${esc(v)}</option>`))}
+function filtered(){const q=$('query').value.trim().toLocaleLowerCase('fr-CH');return all.filter(x=>(!q||`${x.name} ${x.canton} ${x.software} ${x.integrator}`.toLocaleLowerCase('fr-CH').includes(q))&&($('canton').value==='Tous'||x.canton===$('canton').value)&&($('software').value==='Tous'||x.software===$('software').value)&&(!primeOnly||x.isPrime)&&(!issuesOnly||x.deliveryStatus!=='accepted'))}
+function render(){const list=filtered();$('resultCount').textContent=fmt.format(list.length);$('limit').textContent=list.length>120?'120 premiers résultats affichés · affinez les filtres pour aller plus loin':'';$('rows').innerHTML=list.slice(0,120).map(x=>`<tr data-id="${x.id}"><td><span class="status-dot ${esc(x.deliveryStatus)}"></span></td><td><strong>${esc(x.name)}</strong>${x.isPrime?'<span class="client-pill">Prime</span>':''}</td><td>${esc(x.canton)}</td><td class="numeric">${fmt.format(x.expectedPopulation)}</td><td>${x.software?esc(x.software):'<span class="empty">À compléter</span>'}</td><td>${x.integrator?esc(x.integrator):'<span class="empty">—</span>'}</td><td><span class="rate ${(x.ewidErrorRate??0)>1?'high':''}">${x.ewidErrorRate==null?'—':x.ewidErrorRate.toFixed(1)}%</span></td><td class="arrow">›</td></tr>`).join('');document.querySelectorAll('tbody tr').forEach(tr=>tr.onclick=()=>openDrawer(all.find(x=>String(x.id)===tr.dataset.id)))}
+function openDrawer(x){$('drawerRoot').innerHTML=`<div class="drawer-backdrop"><aside class="drawer"><button class="drawer-close">×</button><div class="drawer-title"><span class="status-dot ${esc(x.deliveryStatus)}"></span><div><p>${esc(x.canton)} · OFS ${x.id}</p><h2>${esc(x.name)}</h2></div></div><div class="drawer-pop"><strong>${fmt.format(x.expectedPopulation)}</strong><span>habitants attendus</span></div><section><h3>Livraison Delimo</h3><dl><div><dt>Population reçue</dt><dd>${fmt.format(x.receivedPopulation??0)}</dd></div><div><dt>Erreur EWID</dt><dd>${x.ewidErrorRate?.toFixed(1)??'—'}%</dd></div><div><dt>EWID manquants</dt><dd>${x.missingEwid?.toFixed(1)??'—'}%</dd></div><div><dt>Version eCH</dt><dd>${esc(x.echVersion)}</dd></div></dl><p class="delivery-comment">${esc(x.comment)}</p></section><section><h3>Connaissance marché</h3><label>Logiciel installé<input value="${esc(x.software)}" placeholder="À compléter"></label><label>Intégrateur<input value="${esc(x.integrator)}" placeholder="À compléter"></label><label>Notes<textarea placeholder="Informations utiles…">${esc(x.notes)}</textarea></label><button class="save-button">Enregistrer les informations</button><p class="prototype-note">V0 · l’enregistrement sera activé avec la base de données</p></section></aside></div>`;document.querySelector('.drawer-close').onclick=closeDrawer;document.querySelector('.drawer-backdrop').onclick=e=>{if(e.target===e.currentTarget)closeDrawer()}}
+function closeDrawer(){$('drawerRoot').innerHTML=''}
+['query','canton','software'].forEach(id=>$(id).addEventListener(id==='query'?'input':'change',render));$('primeOnly').onclick=()=>{primeOnly=!primeOnly;$('primeOnly').classList.toggle('on',primeOnly);render()};$('issuesOnly').onclick=()=>{issuesOnly=!issuesOnly;$('issuesOnly').classList.toggle('on',issuesOnly);$('issuesOnly').classList.toggle('warning',issuesOnly);render()};$('issuesCard').onclick=()=>{issuesOnly=true;$('issuesOnly').classList.add('on','warning');render();document.querySelector('.data-panel').scrollIntoView({behavior:'smooth'})};$('reset').onclick=()=>{$('query').value='';$('canton').value='Tous';$('software').value='Tous';primeOnly=issuesOnly=false;document.querySelectorAll('.filter-toggle').forEach(x=>x.classList.remove('on','warning'));render()};$('exportBtn').onclick=()=>{const rows=filtered(),lines=['Nom\tCanton\tPopulation\tLogiciel\tIntégrateur',...rows.map(x=>[x.name,x.canton,x.expectedPopulation,x.software,x.integrator].join('\t'))];const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/tab-separated-values'}));a.download='communes.tsv';a.click()};
+</script>
+</body>
+</html>
