@@ -39,6 +39,7 @@ export default function Dashboard() {
   const [issuesOnly, setIssuesOnly] = useState(false);
   const [ofsMode, setOfsMode] = useState(false);
   const [selected, setSelected] = useState<Municipality | null>(null);
+  const [sort, setSort] = useState<{ key: "population" | "name"; direction: "asc" | "desc" }>({ key: "population", direction: "desc" });
 
   const loadData = async () => {
     setRefreshing(true);
@@ -84,7 +85,15 @@ export default function Dashboard() {
     return (!needle || `${item.name} ${item.canton} ${item.software} ${item.integrator}`.toLocaleLowerCase("fr-CH").includes(needle))
       && (canton === "Tous" || item.canton === canton) && (software === "Tous" || item.integrator === software)
       && (!primeOnly || item.isPrime) && (!issuesOnly || item.deliveryStatus !== "accepted");
-  }), [municipalities, query, canton, software, primeOnly, issuesOnly]);
+  }).sort((a, b) => {
+    const comparison = sort.key === "population"
+      ? a.expectedPopulation - b.expectedPopulation
+      : a.name.localeCompare(b.name, "fr-CH", { sensitivity: "base" });
+    return sort.direction === "asc" ? comparison : -comparison;
+  }), [municipalities, query, canton, software, primeOnly, issuesOnly, sort]);
+  const changeSort = (key: "population" | "name") => setSort((current) => current.key === key
+    ? { key, direction: current.direction === "asc" ? "desc" : "asc" }
+    : { key, direction: key === "population" ? "desc" : "asc" });
   const stats = useMemo(() => {
     const over10k = municipalities.filter((item) => item.expectedPopulation >= 10_000);
     const prime = municipalities.filter((item) => item.isPrime);
@@ -116,7 +125,7 @@ export default function Dashboard() {
           <button className={`filter-toggle ${primeOnly ? "on" : ""}`} onClick={() => setPrimeOnly(!primeOnly)}>Clients Prime</button>{ofsMode && <button className={`filter-toggle ${issuesOnly ? "on warning" : ""}`} onClick={() => setIssuesOnly(!issuesOnly)}>À surveiller</button>}
         </div>
         <div className="result-line"><strong>{number.format(filtered.length)}</strong> résultats <button onClick={reset}>Réinitialiser</button></div>
-        <div className="table-wrap"><table><thead><tr>{ofsMode && <th>État</th>}<th>Commune</th><th>Marché</th><th>Canton</th><th>Population</th><th>Intégrateur</th><th>Logiciel</th>{ofsMode && <th>Erreur EWID</th>}<th /></tr></thead><tbody>{filtered.slice(0, 120).map((item) => <tr key={item.id} onClick={() => setSelected(item)}>{ofsMode && <td><StatusDot status={item.deliveryStatus} /></td>}<td><strong>{item.name}</strong>{item.isPrime && <span className="client-pill">Prime</span>}</td><td>{item.market}</td><td>{item.canton}</td><td className="numeric">{number.format(item.expectedPopulation)}</td><td>{item.integrator || <span className="empty">À compléter</span>}</td><td>{item.software || <span className="empty">—</span>}</td>{ofsMode && <td><span className={`rate ${(item.ewidErrorRate ?? 0) > 1 ? "high" : ""}`}>{item.ewidErrorRate?.toFixed(1) ?? "—"}%</span></td>}<td className="arrow">›</td></tr>)}</tbody></table>{filtered.length > 120 && <p className="table-limit">120 premiers résultats affichés · affinez les filtres pour aller plus loin</p>}</div>
+        <div className="table-wrap"><table><thead><tr>{ofsMode && <th>État</th>}<th className="sortable" onClick={() => changeSort("name")}>Commune {sort.key === "name" ? (sort.direction === "asc" ? "↑" : "↓") : ""}</th><th>Marché</th><th>Canton</th><th className="sortable" onClick={() => changeSort("population")}>Population {sort.key === "population" ? (sort.direction === "asc" ? "↑" : "↓") : ""}</th><th>Intégrateur</th><th>Logiciel</th>{ofsMode && <th>Erreur EWID</th>}<th /></tr></thead><tbody>{filtered.slice(0, 120).map((item) => <tr key={item.id} onClick={() => setSelected(item)}>{ofsMode && <td><StatusDot status={item.deliveryStatus} /></td>}<td><strong>{item.name}</strong>{item.isPrime && <span className="client-pill">Prime</span>}</td><td>{item.market}</td><td>{item.canton}</td><td className="numeric">{number.format(item.expectedPopulation)}</td><td>{item.integrator || <span className="empty">À compléter</span>}</td><td>{item.software || <span className="empty">—</span>}</td>{ofsMode && <td><span className={`rate ${(item.ewidErrorRate ?? 0) > 1 ? "high" : ""}`}>{item.ewidErrorRate?.toFixed(1) ?? "—"}%</span></td>}<td className="arrow">›</td></tr>)}</tbody></table>{filtered.length > 120 && <p className="table-limit">120 premiers résultats affichés · affinez les filtres pour aller plus loin</p>}</div>
       </section>
     </section>
     {selected && <div className="drawer-backdrop" onClick={() => setSelected(null)}><aside className="drawer" onClick={(event) => event.stopPropagation()}><button className="drawer-close" onClick={() => setSelected(null)}>×</button><div className="drawer-title">{ofsMode && <StatusDot status={selected.deliveryStatus} />}<div><p>{selected.canton} · OFS {selected.id}</p><h2>{selected.name}</h2></div></div><div className="drawer-pop"><strong>{number.format(selected.expectedPopulation)}</strong><span>habitants attendus</span></div>{ofsMode && <section><h3>Livraison Delimo</h3><dl><div><dt>Population reçue</dt><dd>{number.format(selected.receivedPopulation ?? 0)}</dd></div><div><dt>Erreur EWID</dt><dd>{selected.ewidErrorRate?.toFixed(1)}%</dd></div><div><dt>EWID manquants</dt><dd>{selected.missingEwid?.toFixed(1)}%</dd></div><div><dt>Version eCH</dt><dd>{selected.echVersion}</dd></div></dl><p className="delivery-comment">{selected.comment}</p></section>}<section><h3>Connaissance marché</h3><label>Intégrateur<select defaultValue={selected.integrator}><option value="">Non renseigné</option>{[...new Set([...supplierChoices, selected.integrator].filter(Boolean))].sort().map((value) => <option key={value}>{value}</option>)}</select></label><label>Logiciel<select defaultValue={selected.software}><option value="">Non renseigné</option>{[...new Set([...softwareChoices, selected.software].filter(Boolean))].sort().map((value) => <option key={value}>{value}</option>)}</select></label><label>Statut commercial<select defaultValue={selected.salesStatus}><option value="none">Non qualifié</option><option>À cibler</option><option>En discussion</option><option>Client</option></select></label><label>Notes<textarea defaultValue={selected.notes} placeholder="Informations utiles, contexte, prochaine étape…" /></label><button className="save-button">Enregistrer les informations</button><p className="prototype-note">V0 locale · l’enregistrement sera activé avec la base de données</p></section></aside></div>}
