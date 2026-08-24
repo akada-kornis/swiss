@@ -2,15 +2,22 @@ import fs from "node:fs";
 
 const file = new URL("../public/data/municipalities.json", import.meta.url);
 const data = JSON.parse(fs.readFileSync(file, "utf8"));
-const eAdminMunicipalities = new Set(["Vernier", "Lancy", "Carouge (GE)", "Onex", "Thônex", "Plan-les-Ouates"]);
+const eAdminMunicipalities = new Map([
+  ["GE", new Set(["Lancy", "Vernier", "Thônex", "Onex", "Carouge (GE)", "Plan-les-Ouates", "Collonge-Bellerive", "Cologny"])],
+  ["VD", new Set(["Montreux", "Vevey", "Aubonne", "Prangins", "Rolle", "Cossonay", "Echandens", "Ecublens (VD)", "Gland", "Le Mont-sur-Lausanne"])],
+]);
 
 for (const municipality of data.municipalities) {
   municipality.products ||= [];
+  if (eAdminMunicipalities.get(municipality.canton)?.has(municipality.name)) {
+    municipality.products = [...new Set([...(municipality.products || []), "eAdmin"])]
+  }
+
   if (municipality.canton !== "GE") continue;
 
   const formerIntegrator = municipality.integrator || "";
   const formerSoftware = municipality.software || "";
-  if (formerIntegrator.startsWith("Calvin | eAdmin") || formerSoftware.includes("eAdmin") || eAdminMunicipalities.has(municipality.name)) {
+  if (formerIntegrator.startsWith("Calvin | eAdmin") || formerSoftware.includes("eAdmin")) {
     municipality.products = [...new Set([...(municipality.products || []), "eAdmin"])]
   }
 
