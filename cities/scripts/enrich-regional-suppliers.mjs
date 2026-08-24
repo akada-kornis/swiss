@@ -18,6 +18,8 @@ add("VD", "Data", "Bussigny|Chavannes-près-Renens|Cheseaux-sur-Lausanne|Romanel
 add("VD", "Infolog", "Bex");
 add("VD", "Urbanus", "Moudon");
 add("VD", "Larix", "Château-d'Oex");
+add("VD", "Prime", "Lussery-Villars");
+add("FR", "Prime", "Bois-d'Amont|Marly");
 
 const aliases = new Map([
   ["BE|Romont", "BE|Romont (BE)"],
@@ -36,6 +38,23 @@ for (const municipality of data.municipalities) {
   municipality.software = suppliers.get(key);
   municipality.isPrime = municipality.software === "Prime";
   found.add(key);
+}
+
+const integratorAliases = { Urbanus: "Data" };
+const softwareByIntegrator = {
+  Prime: "innosolvcity", Data: "Urbanus", Ofisa: "innosolvcity",
+  Ciges: "innosolvcity", Talus: "innosolvcity", OBT: "innosolvcity",
+};
+for (const municipality of data.municipalities) {
+  if (municipality.market === "Romandie") municipality.market = "Welsch";
+  if (municipality.market === "Deutschschweiz") municipality.market = "CH-D";
+  if (municipality.canton === "TI") municipality.market = "Ticino";
+  let integrator = municipality.integrator || municipality.software || "";
+  if (integrator === "Larix" || integrator === "Infolog") integrator = "";
+  integrator = integratorAliases[integrator] || integrator;
+  municipality.integrator = integrator;
+  municipality.software = softwareByIntegrator[integrator] || "";
+  municipality.isPrime = integrator === "Prime";
 }
 
 const missing = [...suppliers.keys()].filter((key) => !found.has(key));
