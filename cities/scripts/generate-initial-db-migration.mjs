@@ -3,6 +3,7 @@ import fs from "node:fs";
 const data = JSON.parse(fs.readFileSync(new URL("../public/data/municipalities.json", import.meta.url), "utf8"));
 const out = new URL("../supabase/migrations/20260824220200_initial_data.sql", import.meta.url);
 const q = (value) => value == null || value === "" ? "null" : `'${String(value).replaceAll("'", "''")}'`;
+const qRequired = (value) => `'${String(value ?? "").replaceAll("'", "''")}'`;
 const n = (value) => value == null ? "null" : String(value);
 const chunks = (rows, size = 250) => Array.from({ length: Math.ceil(rows.length / size) }, (_, i) => rows.slice(i * size, (i + 1) * size));
 const importId = "00000000-0000-4000-8000-000000000001";
@@ -25,7 +26,7 @@ for (const x of profiles) {
   const vp = vpCode[x.integrator] ? `(select id from public."VP" where code=${q(vpCode[x.integrator])})` : "null";
   const sw = swCode[x.software] ? `(select id from public."Software" where code=${q(swCode[x.software])})` : "null";
   const confidence = x.integrator?.endsWith("?") ? "suspected" : x.integrator ? "confirmed" : "unknown";
-  sql += `insert into public."GemeindeProfil" (bfs_id,vp_id,software_id,sales_status,confidence,notes) values (${x.id},${vp},${sw},${q(x.salesStatus || "none")},${q(confidence)},${q(x.notes || "")}) on conflict (bfs_id) do update set vp_id=excluded.vp_id,software_id=excluded.software_id,sales_status=excluded.sales_status,confidence=excluded.confidence,notes=excluded.notes;\n`;
+  sql += `insert into public."GemeindeProfil" (bfs_id,vp_id,software_id,sales_status,confidence,notes) values (${x.id},${vp},${sw},${q(x.salesStatus || "none")},${q(confidence)},${qRequired(x.notes || "")}) on conflict (bfs_id) do update set vp_id=excluded.vp_id,software_id=excluded.software_id,sales_status=excluded.sales_status,confidence=excluded.confidence,notes=excluded.notes;\n`;
 }
 
 sql += "\ncommit;\n";
