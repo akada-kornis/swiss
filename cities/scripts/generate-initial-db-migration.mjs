@@ -7,8 +7,8 @@ const qRequired = (value) => `'${String(value ?? "").replaceAll("'", "''")}'`;
 const n = (value) => value == null ? "null" : String(value);
 const chunks = (rows, size = 250) => Array.from({ length: Math.ceil(rows.length / size) }, (_, i) => rows.slice(i * size, (i + 1) * size));
 const importId = "00000000-0000-4000-8000-000000000001";
-const vpCode = { Prime:"prime", Data:"data", Ofisa:"ofisa", T2i:"t2i", Calvin:"calvin", "Calvin | eAdmin":"calvin_eadmin", "Calvin | eAdmin ?":"calvin_eadmin", OBT:"obt", Talus:"talus", "Etic@SIEN":"etic_sien", Ciges:"ciges" };
-const swCode = { innosolvcity:"innosolvcity", Urbanus:"urbanus" };
+const vpCode = { Prime:"prime", Data:"data", Ofisa:"ofisa", T2i:"t2i", SIACG:"siacg", OBT:"obt", Talus:"talus", "Etic@SIEN":"etic_sien", Ciges:"ciges" };
+const swCode = { innosolvcity:"innosolvcity", Urbanus:"urbanus", Calvin:"calvin", "Calvin | eAdmin":"calvin_eadmin" };
 let sql = "begin;\n\n";
 
 for (const part of chunks(data.municipalities)) {
