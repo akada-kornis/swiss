@@ -17,7 +17,7 @@
   <header class="topbar">
     <img src="public/prime-logo.png" class="brand" alt="Prime technologies">
     <nav class="nav-tabs"><button class="nav-tab active">Vue d’ensemble</button><button class="nav-tab">Communes</button><button class="nav-tab">Analyses</button></nav>
-    <div class="sync-state"><span></span>Données au 30.06.2026</div>
+    <button class="sync-state" id="syncReload" title="Recharger depuis Supabase"><span></span><b id="syncText">Connexion à la base…</b></button>
   </header>
   <section class="workspace">
     <div class="intro-row"><div><p class="eyebrow">Marché suisse · Delimo P99</p><h1>Les communes.<br><span>Enfin lisibles.</span></h1></div><p class="intro-copy">Une vue unique du marché communal suisse : population, qualité des livraisons, logiciels et opportunités.</p></div>
@@ -43,9 +43,26 @@
 <div id="drawerRoot"></div>
 <script>
 const fmt=new Intl.NumberFormat('fr-CH');let all=[],primeOnly=false,issuesOnly=false,ofsMode=false;
-const supplierChoices=['Prime','Data','Ofisa','T2i','Calvin','Calvin | eAdmin','OBT','Talus','Etic@SIEN','Ciges']; const softwareChoices=['innosolvcity','Urbanus'];
+const supplierChoices=['Prime','Data','Ofisa','T2i','SIACG','OBT','Talus','Etic@SIEN','Ciges']; const softwareChoices=['innosolvcity','Urbanus','Calvin','Calvin | eAdmin'];
 const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-fetch('public/data/municipalities-v4.json').then(r=>r.json()).then(data=>{all=data.municipalities;$('population').textContent=fmt.format(data.meta.expectedPopulation);$('communeCount').textContent=fmt.format(data.meta.municipalityCount);const over=all.filter(x=>x.expectedPopulation>=10000),prime=all.filter(x=>x.isPrime),issues=all.filter(x=>x.deliveryStatus!=='accepted');$('over10k').textContent=over.length;$('over10kPop').textContent=fmt.format(over.reduce((s,x)=>s+x.expectedPopulation,0));$('prime').textContent=prime.length;$('primePop').textContent=fmt.format(prime.reduce((s,x)=>s+x.expectedPopulation,0));$('issues').textContent=issues.length;fill('canton',[...new Set(all.map(x=>x.canton))].sort());fill('software',[...new Set(all.map(x=>x.integrator).filter(Boolean))].sort());render();}).catch(()=>{$('rows').innerHTML='<tr><td colspan="8">Impossible de charger les données.</td></tr>'});
+const SUPABASE_URL='https://ozdvmllgxduzquiujcbg.supabase.co',SUPABASE_KEY='sb_publishable_ltaNA7nnVozoSCOcZIjg';
+function applyData(data,source){
+  all=data.municipalities;
+  $('population').textContent=fmt.format(data.meta.expectedPopulation);$('communeCount').textContent=fmt.format(data.meta.municipalityCount);
+  const over=all.filter(x=>x.expectedPopulation>=10000),prime=all.filter(x=>x.isPrime),issues=all.filter(x=>x.deliveryStatus!=='accepted');
+  $('over10k').textContent=over.length;$('over10kPop').textContent=fmt.format(over.reduce((s,x)=>s+x.expectedPopulation,0));$('prime').textContent=prime.length;$('primePop').textContent=fmt.format(prime.reduce((s,x)=>s+x.expectedPopulation,0));$('issues').textContent=issues.length;
+  $('canton').innerHTML='<option>Tous</option>';$('software').innerHTML='<option>Tous</option>';fill('canton',[...new Set(all.map(x=>x.canton))].sort());fill('software',[...new Set(all.map(x=>x.integrator).filter(Boolean))].sort());
+  $('syncText').textContent='Données au '+new Date(data.meta.referenceDate+'T00:00:00').toLocaleDateString('fr-CH')+' · '+source;render();
+}
+function mapDb(x){return{id:x.bfs_id,name:x.name,canton:x.canton,market:x.market,expectedPopulation:x.expected_population??0,receivedPopulation:x.received_population,receivedOn:x.received_on??'',comment:x.comment??'',echVersion:x.ech_version??'',missingEwid:x.missing_ewid,ewidErrorRate:x.ewid_error_rate,deliveryStatus:x.delivery_status??'unknown',software:x.software??'',integrator:x.integrator??'',isPrime:x.integrator==='Prime',salesStatus:x.sales_status??'none',notes:x.notes??''}}
+async function loadData(){
+  $('syncText').textContent='Actualisation…';
+  try{
+    const rows=[];for(let from=0;;from+=1000){const r=await fetch(SUPABASE_URL+'/rest/v1/GemeindeAktuell?select=*&order=bfs_id',{headers:{apikey:SUPABASE_KEY,Range:from+'-'+(from+999)},cache:'no-store'});if(!r.ok)throw new Error('Supabase '+r.status);const page=await r.json();rows.push(...page);if(page.length<1000)break}
+    const municipalities=rows.map(mapDb),referenceDate=rows.find(x=>x.reference_date)?.reference_date??'2026-06-30';applyData({meta:{referenceDate,municipalityCount:municipalities.length,expectedPopulation:municipalities.reduce((s,x)=>s+x.expectedPopulation,0)},municipalities},'base live');
+  }catch(e){const r=await fetch('public/data/municipalities-v5.json');applyData(await r.json(),'copie locale')}
+}
+loadData().catch(()=>{$('rows').innerHTML='<tr><td colspan="8">Impossible de charger les données.</td></tr>'});
 function fill(id,values){values.forEach(v=>$(id).insertAdjacentHTML('beforeend',`<option>${esc(v)}</option>`))}
 function filtered(){const q=$('query').value.trim().toLocaleLowerCase('fr-CH');return all.filter(x=>(!q||`${x.name} ${x.canton} ${x.software} ${x.integrator}`.toLocaleLowerCase('fr-CH').includes(q))&&($('canton').value==='Tous'||x.canton===$('canton').value)&&($('software').value==='Tous'||x.integrator===$('software').value)&&(!primeOnly||x.isPrime)&&(!issuesOnly||x.deliveryStatus!=='accepted'))}
 function render(){
@@ -62,7 +79,7 @@ function openDrawer(x){
   document.querySelector('.drawer-close').onclick=closeDrawer; document.querySelector('.drawer-backdrop').onclick=e=>{if(e.target===e.currentTarget)closeDrawer()};
 }
 function closeDrawer(){$('drawerRoot').innerHTML=''}
-['query','canton','software'].forEach(id=>$(id).addEventListener(id==='query'?'input':'change',render));$('primeOnly').onclick=()=>{primeOnly=!primeOnly;$('primeOnly').classList.toggle('on',primeOnly);render()};$('issuesOnly').onclick=()=>{issuesOnly=!issuesOnly;$('issuesOnly').classList.toggle('on',issuesOnly);$('issuesOnly').classList.toggle('warning',issuesOnly);render()};$('issuesCard').onclick=()=>{ofsMode=!ofsMode; if(!ofsMode)issuesOnly=false; $('issuesOnly').hidden=!ofsMode; $('issuesCard').classList.toggle('ofs-active',ofsMode); $('ofsLabel').textContent=ofsMode?$('issues').textContent:'Ouvrir'; $('ofsCopy').textContent=ofsMode?'livraisons à surveiller':'Afficher les statuts Delimo'; render()};$('reset').onclick=()=>{$('query').value='';$('canton').value='Tous';$('software').value='Tous';primeOnly=issuesOnly=false;document.querySelectorAll('.filter-toggle').forEach(x=>x.classList.remove('on','warning'));render()};$('exportBtn').onclick=()=>{const rows=filtered(),lines=['Nom\tCanton\tPopulation\tLogiciel\tIntégrateur',...rows.map(x=>[x.name,x.canton,x.expectedPopulation,x.software,x.integrator].join('\t'))];const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/tab-separated-values'}));a.download='communes.tsv';a.click()};
+['query','canton','software'].forEach(id=>$(id).addEventListener(id==='query'?'input':'change',render));$('primeOnly').onclick=()=>{primeOnly=!primeOnly;$('primeOnly').classList.toggle('on',primeOnly);render()};$('issuesOnly').onclick=()=>{issuesOnly=!issuesOnly;$('issuesOnly').classList.toggle('on',issuesOnly);$('issuesOnly').classList.toggle('warning',issuesOnly);render()};$('issuesCard').onclick=()=>{ofsMode=!ofsMode; if(!ofsMode)issuesOnly=false; $('issuesOnly').hidden=!ofsMode; $('issuesCard').classList.toggle('ofs-active',ofsMode); $('ofsLabel').textContent=ofsMode?$('issues').textContent:'Ouvrir'; $('ofsCopy').textContent=ofsMode?'livraisons à surveiller':'Afficher les statuts Delimo'; render()};$('reset').onclick=()=>{$('query').value='';$('canton').value='Tous';$('software').value='Tous';primeOnly=issuesOnly=false;document.querySelectorAll('.filter-toggle').forEach(x=>x.classList.remove('on','warning'));render()};$('syncReload').onclick=loadData;$('exportBtn').onclick=()=>{const rows=filtered(),lines=['Nom\tCanton\tPopulation\tLogiciel\tIntégrateur',...rows.map(x=>[x.name,x.canton,x.expectedPopulation,x.software,x.integrator].join('\t'))];const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/tab-separated-values'}));a.download='communes.tsv';a.click()};
 </script>
 </body>
 </html>
