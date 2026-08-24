@@ -16,7 +16,7 @@
 <main class="app-shell">
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
   <header class="topbar">
-    <img src="public/prime-logo.png" class="brand" alt="Prime technologies">
+    <img src="public/prime-logo-negative.svg" class="brand" alt="Prime technologies">
     <nav class="nav-tabs"><button class="nav-tab active">Vue d’ensemble</button><button class="nav-tab">Communes</button><button class="nav-tab">Analyses</button></nav>
     <button class="sync-state" id="syncReload" title="Recharger depuis Supabase"><span></span><b id="syncText">Connexion à la base…</b></button>
   </header>
@@ -24,7 +24,7 @@
     <div class="intro-row"><div><p class="eyebrow">Marché suisse · Delimo P99</p><h1>Les communes.<br><span>Enfin lisibles.</span></h1></div><p class="intro-copy">Une vue unique du marché communal suisse : population, qualité des livraisons, logiciels et opportunités.</p></div>
     <section class="kpi-grid">
       <article class="kpi-card hero-kpi"><div class="kpi-top"><span class="kpi-label">Population couverte</span><span class="kpi-country"><img class="swiss-mark" src="public/swiss-mark.svg" alt="Suisse"><span class="kpi-badge">100%</span></span></div><strong id="population">—</strong><p><span id="communeCount">—</span> communes</p><div class="sparkline"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
-      <article class="kpi-card"><span class="kpi-label">Communes ≥ 10’000</span><strong id="over10k">—</strong><p><span id="over10kPop">—</span> habitants</p></article>
+      <article class="kpi-card"><div class="kpi-top"><span class="kpi-label">Communes ≥ 10’000</span><span class="kpi-badge" id="over10kShare">—</span></div><strong id="over10k">—</strong><p><span id="over10kPop">—</span> habitants · <span id="over10kPopShare">—</span> du pays</p></article>
       <article class="kpi-card prime-card"><div class="kpi-top"><span class="kpi-label">Clients Prime</span><img class="prime-one" src="public/prime-one-negative.png?v=3" alt="Prime"></div><strong id="prime">—</strong><p><span id="primePop">—</span> habitants identifiés</p></article>
       <button class="kpi-card alert-card" id="issuesCard"><span id="issues" hidden>—</span><span class="kpi-label">Contrôle OFS</span><strong id="ofsLabel">Ouvrir</strong><p><span id="ofsCopy">Afficher les statuts Delimo</span> <span>→</span></p></button>
     </section>
@@ -43,15 +43,15 @@
 </main>
 <div id="drawerRoot"></div>
 <script>
-const fmt=new Intl.NumberFormat('fr-CH');let all=[],primeOnly=false,eadminOnly=false,issuesOnly=false,ofsMode=false,sortKey='population',sortDirection='desc';
-const supplierChoices=['Prime','Data','Ofisa','T2i','SIACG','OBT','Talus','Etic@SIEN','Ciges']; const softwareChoices=['innosolvcity','Urbanus','Calvin'];
+const fmt=new Intl.NumberFormat('fr-CH'),pct=new Intl.NumberFormat('fr-CH',{minimumFractionDigits:1,maximumFractionDigits:1});let all=[],primeOnly=false,eadminOnly=false,issuesOnly=false,ofsMode=false,sortKey='population',sortDirection='desc';
+const supplierChoices=['Prime','Data','Ofisa','T2i','SIACG','OBT','Talus','Etic@SIEN','SIEN','Ciges']; const softwareChoices=['innosolvcity','Urbanus','Calvin','ETIC'];
 const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const SUPABASE_URL='https://ozdvmllgxduzquiujcbg.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96ZHZtbGxneGR1enF1aXVqY2JnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1NzkwNTIsImV4cCI6MjEwMzE1NTA1Mn0.mVT0_dqcpAzb3QxmC5xDmB8bq7RZrpDd5dpvnGKPaTw';
 function applyData(data,source){
   all=data.municipalities;
   $('population').textContent=fmt.format(data.meta.expectedPopulation);$('communeCount').textContent=fmt.format(data.meta.municipalityCount);
   const over=all.filter(x=>x.expectedPopulation>=10000),prime=all.filter(x=>x.isPrime),issues=all.filter(x=>x.deliveryStatus!=='accepted');
-  $('over10k').textContent=over.length;$('over10kPop').textContent=fmt.format(over.reduce((s,x)=>s+x.expectedPopulation,0));$('prime').textContent=prime.length;$('primePop').textContent=fmt.format(prime.reduce((s,x)=>s+x.expectedPopulation,0));$('issues').textContent=issues.length;
+  const overPop=over.reduce((s,x)=>s+x.expectedPopulation,0);$('over10k').textContent=over.length;$('over10kPop').textContent=fmt.format(overPop);$('over10kShare').textContent=pct.format(over.length/all.length*100)+'%';$('over10kPopShare').textContent=pct.format(overPop/data.meta.expectedPopulation*100)+'%';$('prime').textContent=prime.length;$('primePop').textContent=fmt.format(prime.reduce((s,x)=>s+x.expectedPopulation,0));$('issues').textContent=issues.length;
   $('canton').innerHTML='<option>Tous</option>';$('software').innerHTML='<option>Tous</option>';fill('canton',[...new Set(all.map(x=>x.canton))].sort());fill('software',[...new Set(all.map(x=>x.integrator).filter(Boolean))].sort());
   $('syncText').textContent='Données au '+new Date(data.meta.referenceDate+'T00:00:00').toLocaleDateString('fr-CH')+' · '+source;render();
 }
