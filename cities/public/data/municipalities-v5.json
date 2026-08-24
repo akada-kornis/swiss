@@ -220,8 +220,8 @@
       "missingEwid": 0.1,
       "ewidErrorRate": 0.2,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "Etic@SIEN",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -345,7 +345,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 6643,
@@ -382,8 +384,8 @@
       "missingEwid": 0.4,
       "ewidErrorRate": 1.4,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "Etic@SIEN",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -651,7 +653,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 4566,
@@ -851,7 +855,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 2703,
@@ -1472,8 +1478,8 @@
       "missingEwid": 0,
       "ewidErrorRate": 0,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "Etic@SIEN",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -2222,7 +2228,8 @@
       "salesStatus": "none",
       "notes": "",
       "products": [
-        "eAdmin"
+        "eAdmin",
+        "Citizen"
       ]
     },
     {
@@ -2503,7 +2510,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 5589,
@@ -2702,8 +2711,8 @@
       "missingEwid": 0.1,
       "ewidErrorRate": 0.2,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "Etic@SIEN",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -2867,7 +2876,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 4254,
@@ -2982,7 +2993,7 @@
       "missingEwid": 0.1,
       "ewidErrorRate": 0.1,
       "deliveryStatus": "accepted",
-      "software": "",
+      "software": "ETIC",
       "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
@@ -3142,7 +3153,7 @@
       "missingEwid": 0,
       "ewidErrorRate": 0.4,
       "deliveryStatus": "accepted",
-      "software": "",
+      "software": "ETIC",
       "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
@@ -3987,7 +3998,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 6416,
@@ -4002,8 +4015,8 @@
       "missingEwid": 0.2,
       "ewidErrorRate": 0.8,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -4224,8 +4237,8 @@
       "missingEwid": 0,
       "ewidErrorRate": 0.2,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -4971,7 +4984,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 1040,
@@ -6348,8 +6363,8 @@
       "missingEwid": 0,
       "ewidErrorRate": 0.2,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -7717,7 +7732,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 58,
@@ -8017,7 +8034,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 2932,
@@ -8477,7 +8496,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 251,
@@ -9052,8 +9073,8 @@
       "missingEwid": 0,
       "ewidErrorRate": 0.2,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -9179,7 +9200,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 2825,
@@ -9354,8 +9377,8 @@
       "missingEwid": 0,
       "ewidErrorRate": 0.1,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -10821,7 +10844,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 608,
@@ -11603,7 +11628,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 4170,
@@ -11843,7 +11870,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 101,
@@ -12423,7 +12452,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 3721,
@@ -13483,7 +13514,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 886,
@@ -13603,7 +13636,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 312,
@@ -14323,7 +14358,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 94,
@@ -14803,7 +14840,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 3786,
@@ -15165,7 +15204,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 3731,
@@ -15585,7 +15626,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 903,
@@ -18225,7 +18268,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 1009,
@@ -18925,7 +18970,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 1371,
@@ -19665,7 +19712,9 @@
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 2174,
@@ -19720,8 +19769,8 @@
       "missingEwid": 0,
       "ewidErrorRate": 0.6,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -19912,39 +19961,9 @@
       "name": "Penthaz",
       "canton": "VD",
       "market": "Welsch",
-      "expectedPopulation": 1898,
-      "receivedPopulation": 2091,
-      "receivedOn": "2026-07-15 11:36:33",
-      "comment": "Sufficient quality, data accepted",
-      "echVersion": "2.1",
-      "missingEwid": 0,
-      "ewidErrorRate": 0,
-      "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
-      "isPrime": false,
-      "salesStatus": "none",
-      "notes": "",
-      "products": []
-    },
-    {
-      "id": 2426,
-      "name": "Laupersdorf",
-      "canton": "SO",
-      "market": "CH-D",
-      "expectedPopulation": 1897,
-      "receivedPopulation": 2052,
-      "receivedOn": "2026-07-01 19:20:24",
-      "comment": "Sufficient quality, 
-... 60013 bytes omitted ...
-ucts": []
-    },
-    {
-      "id": 3294,
-      "name": "Pfäfers",
-      "canton": "SG",
-      "market": "CH-D",
-      "expectedPopulation": 1601,
+ 
+... 60855 bytes omitted ...
+": 1601,
       "receivedPopulation": 1827,
       "receivedOn": "2026-07-16 14:46:21",
       "comment": "Sufficient quality, data accepted",
@@ -20997,7 +21016,9 @@ ucts": []
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 3422,
@@ -21777,7 +21798,9 @@ ucts": []
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
-      "products": []
+      "products": [
+        "Citizen"
+      ]
     },
     {
       "id": 3847,
@@ -22772,8 +22795,8 @@ ucts": []
       "missingEwid": 0,
       "ewidErrorRate": 0.3,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -23712,8 +23735,8 @@ ucts": []
       "missingEwid": 0,
       "ewidErrorRate": 0,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -25892,8 +25915,8 @@ ucts": []
       "missingEwid": 0,
       "ewidErrorRate": 0,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -26252,8 +26275,8 @@ ucts": []
       "missingEwid": 0,
       "ewidErrorRate": 0,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -31292,8 +31315,8 @@ ucts": []
       "missingEwid": 0,
       "ewidErrorRate": 0,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -31872,8 +31895,8 @@ ucts": []
       "missingEwid": 0.8,
       "ewidErrorRate": 0.8,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -33912,8 +33935,8 @@ ucts": []
       "missingEwid": 0,
       "ewidErrorRate": 0,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -34232,8 +34255,8 @@ ucts": []
       "missingEwid": 0,
       "ewidErrorRate": 0,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -36872,8 +36895,8 @@ ucts": []
       "missingEwid": 0,
       "ewidErrorRate": 0,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -37052,8 +37075,8 @@ ucts": []
       "missingEwid": 0,
       "ewidErrorRate": 0,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
@@ -38372,8 +38395,8 @@ ucts": []
       "missingEwid": 0,
       "ewidErrorRate": 0,
       "deliveryStatus": "accepted",
-      "software": "",
-      "integrator": "",
+      "software": "ETIC",
+      "integrator": "SIEN",
       "isPrime": false,
       "salesStatus": "none",
       "notes": "",
