@@ -1,0 +1,13 @@
+project_id = "prime-communes"
+
+[api]
+enabled = true
+schemas = ["public"]
+extra_search_path = ["public", "extensions"]
+
+[db]
+major_version = 17
+
+[auth]
+enabled = true
+site_url = "https://akada-kornis.github.io/swiss/cities/"
