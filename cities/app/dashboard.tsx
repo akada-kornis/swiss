@@ -22,7 +22,7 @@ const number = new Intl.NumberFormat("fr-CH");
 const supabaseUrl = "https://ozdvmllgxduzquiujcbg.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96ZHZtbGxneGR1enF1aXVqY2JnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1NzkwNTIsImV4cCI6MjEwMzE1NTA1Mn0.mVT0_dqcpAzb3QxmC5xDmB8bq7RZrpDd5dpvnGKPaTw";
 const supplierChoices = ["Prime", "Data", "Ofisa", "T2i", "SIACG", "OBT", "Talus", "Etic@SIEN", "Ciges"];
-const softwareChoices = ["innosolvcity", "Urbanus", "Calvin", "Calvin | eAdmin"];
+const softwareChoices = ["innosolvcity", "Urbanus", "Calvin"];
 
 function StatusDot({ status }: { status: Municipality["deliveryStatus"] }) {
   const label = status === "accepted" ? "Acceptée" : status === "warning" ? "Attention" : status === "missing" ? "Non livrée" : "Erreur";
@@ -37,6 +37,7 @@ export default function Dashboard() {
   const [canton, setCanton] = useState("Tous");
   const [software, setSoftware] = useState("Tous");
   const [primeOnly, setPrimeOnly] = useState(false);
+  const [eadminOnly, setEadminOnly] = useState(false);
   const [issuesOnly, setIssuesOnly] = useState(false);
   const [ofsMode, setOfsMode] = useState(false);
   const [selected, setSelected] = useState<Municipality | null>(null);
@@ -85,13 +86,14 @@ export default function Dashboard() {
     const needle = query.trim().toLocaleLowerCase("fr-CH");
     return (!needle || `${item.name} ${item.canton} ${item.software} ${item.integrator}`.toLocaleLowerCase("fr-CH").includes(needle))
       && (canton === "Tous" || item.canton === canton) && (software === "Tous" || item.integrator === software)
-      && (!primeOnly || item.isPrime) && (!issuesOnly || item.deliveryStatus !== "accepted");
+      && (!primeOnly || item.isPrime) && (!eadminOnly || item.products.includes("eAdmin"))
+      && (!issuesOnly || item.deliveryStatus !== "accepted");
   }).sort((a, b) => {
     const comparison = sort.key === "population"
       ? a.expectedPopulation - b.expectedPopulation
       : a.name.localeCompare(b.name, "fr-CH", { sensitivity: "base" });
     return sort.direction === "asc" ? comparison : -comparison;
-  }), [municipalities, query, canton, software, primeOnly, issuesOnly, sort]);
+  }), [municipalities, query, canton, software, primeOnly, eadminOnly, issuesOnly, sort]);
   const changeSort = (key: "population" | "name") => setSort((current) => current.key === key
     ? { key, direction: current.direction === "asc" ? "desc" : "asc" }
     : { key, direction: key === "population" ? "desc" : "asc" });
@@ -100,7 +102,7 @@ export default function Dashboard() {
     const prime = municipalities.filter((item) => item.isPrime);
     return { over10k: over10k.length, over10kPopulation: over10k.reduce((sum, item) => sum + item.expectedPopulation, 0), prime: prime.length, primePopulation: prime.reduce((sum, item) => sum + item.expectedPopulation, 0), issues: municipalities.filter((item) => item.deliveryStatus !== "accepted").length };
   }, [municipalities]);
-  const reset = () => { setQuery(""); setCanton("Tous"); setSoftware("Tous"); setPrimeOnly(false); setIssuesOnly(false); };
+  const reset = () => { setQuery(""); setCanton("Tous"); setSoftware("Tous"); setPrimeOnly(false); setEadminOnly(false); setIssuesOnly(false); };
 
   return <main className="app-shell">
     <div className="ambient ambient-one" /><div className="ambient ambient-two" />
@@ -112,7 +114,7 @@ export default function Dashboard() {
     <section className="workspace">
       <div className="intro-row"><div><p className="eyebrow">Marché suisse · Delimo P99</p><h1>Les communes.<br /><span>Enfin lisibles.</span></h1></div><p className="intro-copy">Une vue unique du marché communal suisse : population, qualité des livraisons, logiciels et opportunités.</p></div>
       <section className="kpi-grid" aria-label="Indicateurs clés">
-        <article className="kpi-card hero-kpi"><div className="kpi-top"><span className="kpi-label">Population couverte</span><span className="kpi-badge">100%</span></div><strong>{data ? number.format(data.meta.expectedPopulation) : "—"}</strong><p>habitants attendus · {data?.meta.municipalityCount ?? "—"} communes</p><div className="sparkline"><i /><i /><i /><i /><i /><i /><i /></div></article>
+        <article className="kpi-card hero-kpi"><div className="kpi-top"><span className="kpi-label">Population couverte</span><span className="kpi-country"><img className="swiss-mark" src="/swiss-mark.svg" alt="Suisse" /><span className="kpi-badge">100%</span></span></div><strong>{data ? number.format(data.meta.expectedPopulation) : "—"}</strong><p>habitants attendus · {data?.meta.municipalityCount ?? "—"} communes</p><div className="sparkline"><i /><i /><i /><i /><i /><i /><i /></div></article>
         <article className="kpi-card"><span className="kpi-label">Communes ≥ 10’000</span><strong>{stats.over10k}</strong><p>{number.format(stats.over10kPopulation)} habitants · 49,5% du pays</p></article>
         <article className="kpi-card prime-card"><div className="kpi-top"><span className="kpi-label">Clients Prime</span><img className="prime-one" src="/prime-one-negative.png" alt="Prime" /></div><strong>{stats.prime}</strong><p>{number.format(stats.primePopulation)} habitants identifiés</p></article>
         <button className={`kpi-card alert-card ${ofsMode ? "ofs-active" : ""}`} onClick={() => { setOfsMode(!ofsMode); if (ofsMode) setIssuesOnly(false); }}><span className="kpi-label">Contrôle OFS</span><strong>{ofsMode ? stats.issues : "Ouvrir"}</strong><p>{ofsMode ? "livraisons à surveiller" : "Afficher les statuts Delimo"} <span>→</span></p></button>
@@ -123,10 +125,12 @@ export default function Dashboard() {
           <label className="search"><span>⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Rechercher une commune, un logiciel…" /></label>
           <label><span>Canton</span><select value={canton} onChange={(event) => setCanton(event.target.value)}><option>Tous</option>{cantons.map((value) => <option key={value}>{value}</option>)}</select></label>
           <label><span>Intégrateur</span><select value={software} onChange={(event) => setSoftware(event.target.value)}><option>Tous</option>{integrators.map((value) => <option key={value}>{value}</option>)}</select></label>
-          <button className={`filter-toggle ${primeOnly ? "on" : ""}`} onClick={() => setPrimeOnly(!primeOnly)}>Clients Prime</button>{ofsMode && <button className={`filter-toggle ${issuesOnly ? "on warning" : ""}`} onClick={() => setIssuesOnly(!issuesOnly)}>À surveiller</button>}
+          <button className={`filter-toggle ${primeOnly ? "on" : ""}`} onClick={() => setPrimeOnly(!primeOnly)}>Clients Prime</button>
+          <button className={`filter-toggle ${eadminOnly ? "on eadmin-on" : ""}`} onClick={() => setEadminOnly(!eadminOnly)}>eAdmin</button>
+          {ofsMode && <button className={`filter-toggle ${issuesOnly ? "on warning" : ""}`} onClick={() => setIssuesOnly(!issuesOnly)}>À surveiller</button>}
         </div>
         <div className="result-line"><strong>{number.format(filtered.length)}</strong> résultats <button onClick={reset}>Réinitialiser</button></div>
-        <div className="table-wrap"><table><thead><tr>{ofsMode && <th>État</th>}<th className="sortable" onClick={() => changeSort("name")}>Commune {sort.key === "name" ? (sort.direction === "asc" ? "↑" : "↓") : ""}</th><th>Marché</th><th>Canton</th><th className="sortable" onClick={() => changeSort("population")}>Population {sort.key === "population" ? (sort.direction === "asc" ? "↑" : "↓") : ""}</th><th>Intégrateur</th><th>Logiciel</th>{ofsMode && <th>Erreur EWID</th>}<th /></tr></thead><tbody>{filtered.slice(0, 120).map((item) => <tr key={item.id} onClick={() => setSelected(item)}>{ofsMode && <td><StatusDot status={item.deliveryStatus} /></td>}<td><strong>{item.name}</strong>{item.isPrime && <span className="client-pill">Prime</span>}</td><td>{item.market}</td><td><span className="canton-cell"><img src={`/cantons/${item.canton.toLowerCase()}.svg`} alt="" />{item.canton}</span></td><td className="numeric">{number.format(item.expectedPopulation)}</td><td>{item.integrator || <span className="empty">À compléter</span>}</td><td><span className="software-cell">{item.software || <span className="empty">—</span>}{item.products.includes("eAdmin") && <img className="eadmin-mark" src="/eadmin-mark-negative.png" alt="eAdmin" title="eAdmin · guichet virtuel" />}</span></td>{ofsMode && <td><span className={`rate ${(item.ewidErrorRate ?? 0) > 1 ? "high" : ""}`}>{item.ewidErrorRate?.toFixed(1) ?? "—"}%</span></td>}<td className="arrow">›</td></tr>)}</tbody></table>{filtered.length > 120 && <p className="table-limit">120 premiers résultats affichés · affinez les filtres pour aller plus loin</p>}</div>
+        <div className="table-wrap"><table><thead><tr>{ofsMode && <th>État</th>}<th className="sortable" onClick={() => changeSort("name")}>Commune {sort.key === "name" ? (sort.direction === "asc" ? "↑" : "↓") : ""}</th><th>Marché</th><th>Canton</th><th className="sortable" onClick={() => changeSort("population")}>Population {sort.key === "population" ? (sort.direction === "asc" ? "↑" : "↓") : ""}</th><th>Intégrateur</th><th>Logiciel</th><th className="eadmin-heading">eAdmin</th>{ofsMode && <th>Erreur EWID</th>}<th /></tr></thead><tbody>{filtered.slice(0, 120).map((item) => <tr key={item.id} onClick={() => setSelected(item)}>{ofsMode && <td><StatusDot status={item.deliveryStatus} /></td>}<td><strong>{item.name}</strong>{item.isPrime && <span className="client-pill">Prime</span>}</td><td>{item.market}</td><td><span className="canton-cell"><img src={`/cantons/${item.canton.toLowerCase()}.svg`} alt="" />{item.canton}</span></td><td className="numeric">{number.format(item.expectedPopulation)}</td><td>{item.integrator || <span className="empty">À compléter</span>}</td><td>{item.software || <span className="empty">—</span>}</td><td className="eadmin-cell">{item.products.includes("eAdmin") && <img className="eadmin-mark" src="/eadmin-mark-negative.png" alt="eAdmin" title="eAdmin · guichet virtuel" />}</td>{ofsMode && <td><span className={`rate ${(item.ewidErrorRate ?? 0) > 1 ? "high" : ""}`}>{item.ewidErrorRate?.toFixed(1) ?? "—"}%</span></td>}<td className="arrow">›</td></tr>)}</tbody></table>{filtered.length > 120 && <p className="table-limit">120 premiers résultats affichés · affinez les filtres pour aller plus loin</p>}</div>
       </section>
     </section>
     {selected && <div className="drawer-backdrop" onClick={() => setSelected(null)}><aside className="drawer" onClick={(event) => event.stopPropagation()}><button className="drawer-close" onClick={() => setSelected(null)}>×</button><div className="drawer-title">{ofsMode && <StatusDot status={selected.deliveryStatus} />}<div><p>{selected.canton} · OFS {selected.id}</p><h2>{selected.name}</h2></div></div><div className="drawer-pop"><strong>{number.format(selected.expectedPopulation)}</strong><span>habitants attendus</span></div>{ofsMode && <section><h3>Livraison Delimo</h3><dl><div><dt>Population reçue</dt><dd>{number.format(selected.receivedPopulation ?? 0)}</dd></div><div><dt>Erreur EWID</dt><dd>{selected.ewidErrorRate?.toFixed(1)}%</dd></div><div><dt>EWID manquants</dt><dd>{selected.missingEwid?.toFixed(1)}%</dd></div><div><dt>Version eCH</dt><dd>{selected.echVersion}</dd></div></dl><p className="delivery-comment">{selected.comment}</p></section>}<section><h3>Connaissance marché</h3><label>Intégrateur<select defaultValue={selected.integrator}><option value="">Non renseigné</option>{[...new Set([...supplierChoices, selected.integrator].filter(Boolean))].sort().map((value) => <option key={value}>{value}</option>)}</select></label><label>Logiciel<select defaultValue={selected.software}><option value="">Non renseigné</option>{[...new Set([...softwareChoices, selected.software].filter(Boolean))].sort().map((value) => <option key={value}>{value}</option>)}</select></label><label>Statut commercial<select defaultValue={selected.salesStatus}><option value="none">Non qualifié</option><option>À cibler</option><option>En discussion</option><option>Client</option></select></label><label>Notes<textarea defaultValue={selected.notes} placeholder="Informations utiles, contexte, prochaine étape…" /></label><button className="save-button">Enregistrer les informations</button><p className="prototype-note">V0 locale · l’enregistrement sera activé avec la base de données</p></section></aside></div>}
