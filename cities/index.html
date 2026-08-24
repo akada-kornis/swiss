@@ -62,7 +62,7 @@ async function loadData(){
     const municipalities=rows.map(mapDb),referenceDate=rows.find(x=>x.reference_date)?.reference_date??'2026-06-30';applyData({meta:{referenceDate,municipalityCount:municipalities.length,expectedPopulation:municipalities.reduce((s,x)=>s+x.expectedPopulation,0)},municipalities},'base live');
   }catch(e){const r=await fetch('public/data/municipalities-v5.json');applyData(await r.json(),'copie locale')}
 }
-loadData().catch(()=>{$('rows').innerHTML='<tr><td colspan="8">Impossible de charger les données.</td></tr>'});
+loadData().catch(e=>{$('syncText').textContent='Erreur de chargement';$('rows').innerHTML='<tr><td colspan="8">'+esc(e?.message||e)+'</td></tr>'});
 function fill(id,values){values.forEach(v=>$(id).insertAdjacentHTML('beforeend',`<option>${esc(v)}</option>`))}
 function filtered(){const q=$('query').value.trim().toLocaleLowerCase('fr-CH');return all.filter(x=>(!q||`${x.name} ${x.canton} ${x.software} ${x.integrator}`.toLocaleLowerCase('fr-CH').includes(q))&&($('canton').value==='Tous'||x.canton===$('canton').value)&&($('software').value==='Tous'||x.integrator===$('software').value)&&(!primeOnly||x.isPrime)&&(!issuesOnly||x.deliveryStatus!=='accepted'))}
 function render(){
