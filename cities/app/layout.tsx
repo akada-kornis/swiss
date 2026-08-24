@@ -5,8 +5,8 @@ export const metadata: Metadata = {
   title: "Prime Communes",
   description: "Observatoire du marché communal suisse par Prime technologies.",
   icons: {
-    icon: "/favicon-prime-communes.svg",
-    shortcut: "/favicon-prime-communes.svg",
+    icon: "/favicon-prime-communes.png",
+    shortcut: "/favicon-prime-communes.png",
   },
 };
 
