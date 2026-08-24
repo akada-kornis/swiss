@@ -9,7 +9,7 @@ for (const municipality of data.municipalities) {
   const formerIntegrator = municipality.integrator || "";
   if (formerIntegrator.startsWith("Calvin | eAdmin")) {
     municipality.software = "Calvin | eAdmin";
-  } else if (formerIntegrator === "Calvin") {
+  } else {
     municipality.software = "Calvin";
   }
 
