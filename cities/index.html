@@ -10,7 +10,7 @@
   <meta name="description" content="Observatoire du marché communal suisse par Prime technologies.">
   <link rel="icon" href="public/favicon-prime-communes.png?v=3">
   <link rel="stylesheet" href="app/globals.css?v=2">
-<style>th.sortable{cursor:pointer;user-select:none}th.sortable:hover{color:#b8c7da;background:rgba(255,255,255,.045)}</style>
+<style>th.sortable{cursor:pointer;user-select:none}th.sortable:hover{color:#b8c7da;background:rgba(255,255,255,.045)}.canton-cell,.software-cell{display:flex;align-items:center;gap:8px}.canton-cell img{width:21px;height:21px;object-fit:contain;border-radius:3px;box-shadow:0 2px 7px rgba(0,0,0,.28)}.eadmin-mark{width:38px;height:20px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.28))}</style>
 </head>
 <body>
 <main class="app-shell">
@@ -55,7 +55,7 @@ function applyData(data,source){
   $('canton').innerHTML='<option>Tous</option>';$('software').innerHTML='<option>Tous</option>';fill('canton',[...new Set(all.map(x=>x.canton))].sort());fill('software',[...new Set(all.map(x=>x.integrator).filter(Boolean))].sort());
   $('syncText').textContent='Données au '+new Date(data.meta.referenceDate+'T00:00:00').toLocaleDateString('fr-CH')+' · '+source;render();
 }
-function mapDb(x){return{id:x.bfs_id,name:x.name,canton:x.canton,market:x.market,expectedPopulation:x.expected_population??0,receivedPopulation:x.received_population,receivedOn:x.received_on??'',comment:x.comment??'',echVersion:x.ech_version??'',missingEwid:x.missing_ewid,ewidErrorRate:x.ewid_error_rate,deliveryStatus:x.delivery_status??'unknown',software:x.software??'',integrator:x.integrator??'',isPrime:x.integrator==='Prime',salesStatus:x.sales_status??'none',notes:x.notes??''}}
+function mapDb(x){return{id:x.bfs_id,name:x.name,canton:x.canton,market:x.market,expectedPopulation:x.expected_population??0,receivedPopulation:x.received_population,receivedOn:x.received_on??'',comment:x.comment??'',echVersion:x.ech_version??'',missingEwid:x.missing_ewid,ewidErrorRate:x.ewid_error_rate,deliveryStatus:x.delivery_status??'unknown',software:x.software??'',integrator:x.integrator??'',isPrime:x.integrator==='Prime',salesStatus:x.sales_status??'none',notes:x.notes??'',products:x.products??[]}}
 async function loadData(){
   $('syncText').textContent='Actualisation…';
   try{
@@ -70,7 +70,7 @@ function changeSort(key){if(sortKey===key)sortDirection=sortDirection==='asc'?'d
 function render(){
   const list=filtered(); $('resultCount').textContent=fmt.format(list.length); $('limit').textContent=list.length>120?'120 premiers résultats affichés · affinez les filtres pour aller plus loin':'';
   $('tableHead').innerHTML='<tr>'+(ofsMode?'<th>État</th>':'')+`<th class="sortable" id="sortName">Commune ${sortKey==='name'?(sortDirection==='asc'?'↑':'↓'):''}</th>`+'<th>Marché</th><th>Canton</th>'+`<th class="sortable" id="sortPopulation">Population ${sortKey==='population'?(sortDirection==='asc'?'↑':'↓'):''}</th>`+'<th>Intégrateur</th><th>Logiciel</th>'+(ofsMode?'<th>Erreur EWID</th>':'')+'<th></th></tr>';
-  $('rows').innerHTML=list.slice(0,120).map(x=>`<tr data-id="${x.id}">${ofsMode?`<td><span class="status-dot ${esc(x.deliveryStatus)}"></span></td>`:''}<td><strong>${esc(x.name)}</strong>${x.isPrime?'<span class="client-pill">Prime</span>':''}</td><td>${esc(x.market)}</td><td>${esc(x.canton)}</td><td class="numeric">${fmt.format(x.expectedPopulation)}</td><td>${x.integrator?esc(x.integrator):'<span class="empty">À compléter</span>'}</td><td>${x.software?esc(x.software):'<span class="empty">—</span>'}</td>${ofsMode?`<td><span class="rate ${(x.ewidErrorRate??0)>1?'high':''}">${x.ewidErrorRate==null?'—':x.ewidErrorRate.toFixed(1)}%</span></td>`:''}<td class="arrow">›</td></tr>`).join('');
+  $('rows').innerHTML=list.slice(0,120).map(x=>`<tr data-id="${x.id}">${ofsMode?`<td><span class="status-dot ${esc(x.deliveryStatus)}"></span></td>`:''}<td><strong>${esc(x.name)}</strong>${x.isPrime?'<span class="client-pill">Prime</span>':''}</td><td>${esc(x.market)}</td><td><span class="canton-cell"><img src="public/cantons/${esc(x.canton.toLowerCase())}.svg" alt="">${esc(x.canton)}</span></td><td class="numeric">${fmt.format(x.expectedPopulation)}</td><td>${x.integrator?esc(x.integrator):'<span class="empty">À compléter</span>'}</td><td><span class="software-cell">${x.software?esc(x.software):'<span class="empty">—</span>'}${x.products?.includes('eAdmin')?'<img class="eadmin-mark" src="public/eadmin-mark-negative.png" alt="eAdmin" title="eAdmin · guichet virtuel">':''}</span></td>${ofsMode?`<td><span class="rate ${(x.ewidErrorRate??0)>1?'high':''}">${x.ewidErrorRate==null?'—':x.ewidErrorRate.toFixed(1)}%</span></td>`:''}<td class="arrow">›</td></tr>`).join('');
   $('sortName').onclick=()=>changeSort('name');$('sortPopulation').onclick=()=>changeSort('population');document.querySelectorAll('tbody tr').forEach(tr=>tr.onclick=()=>openDrawer(all.find(x=>String(x.id)===tr.dataset.id)));
 }
 function openDrawer(x){
