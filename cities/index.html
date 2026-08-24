@@ -45,7 +45,7 @@
 const fmt=new Intl.NumberFormat('fr-CH');let all=[],primeOnly=false,issuesOnly=false,ofsMode=false;
 const supplierChoices=['Prime','Data','Ofisa','T2i','SIACG','OBT','Talus','Etic@SIEN','Ciges']; const softwareChoices=['innosolvcity','Urbanus','Calvin','Calvin | eAdmin'];
 const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const SUPABASE_URL='https://ozdvmllgxduzquiujcbg.supabase.co',SUPABASE_KEY='sb_publishable_ltaNA7nnVozoSCOcZIjg';
+const SUPABASE_URL='https://ozdvmllgxduzquiujcbg.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96ZHZtbGxneGR1enF1aXVqY2JnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1NzkwNTIsImV4cCI6MjEwMzE1NTA1Mn0.mVT0_dqcpAzb3QxmC5xDmB8bq7RZrpDd5dpvnGKPaTw';
 function applyData(data,source){
   all=data.municipalities;
   $('population').textContent=fmt.format(data.meta.expectedPopulation);$('communeCount').textContent=fmt.format(data.meta.municipalityCount);
