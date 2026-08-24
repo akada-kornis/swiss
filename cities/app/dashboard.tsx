@@ -10,9 +10,18 @@ type Municipality = {
   software: string; integrator: string; isPrime: boolean; salesStatus: string; notes: string;
 };
 type Dataset = { meta: { referenceDate: string; municipalityCount: number; expectedPopulation: number }; municipalities: Municipality[] };
+type DatabaseMunicipality = {
+  bfs_id: number; name: string; canton: string; market: string;
+  expected_population: number; received_population: number | null; received_on: string | null;
+  comment: string | null; ech_version: string | null; missing_ewid: number | null; ewid_error_rate: number | null;
+  delivery_status: Municipality["deliveryStatus"] | null; integrator: string | null; software: string | null;
+  sales_status: string | null; notes: string | null; reference_date: string | null;
+};
 const number = new Intl.NumberFormat("fr-CH");
-const supplierChoices = ["Prime", "Data", "Ofisa", "T2i", "Calvin", "Calvin | eAdmin", "OBT", "Talus", "Etic@SIEN", "Ciges", "Infolog", "Urbanus", "Larix"];
-const softwareChoices = ["innosolvcity", "Urbanus"];
+const supabaseUrl = "https://ozdvmllgxduzquiujcbg.supabase.co";
+const supabaseKey = "sb_publishable_ltaNA7nnVozoSCOcZIjg";
+const supplierChoices = ["Prime", "Data", "Ofisa", "T2i", "SIACG", "OBT", "Talus", "Etic@SIEN", "Ciges"];
+const softwareChoices = ["innosolvcity", "Urbanus", "Calvin", "Calvin | eAdmin"];
 
 function StatusDot({ status }: { status: Municipality["deliveryStatus"] }) {
   const label = status === "accepted" ? "Acceptée" : status === "warning" ? "Attention" : status === "missing" ? "Non livrée" : "Erreur";
@@ -21,6 +30,8 @@ function StatusDot({ status }: { status: Municipality["deliveryStatus"] }) {
 
 export default function Dashboard() {
   const [data, setData] = useState<Dataset | null>(null);
+  const [dataSource, setDataSource] = useState<"database" | "fallback" | "loading">("loading");
+  const [refreshing, setRefreshing] = useState(false);
   const [query, setQuery] = useState("");
   const [canton, setCanton] = useState("Tous");
   const [software, setSoftware] = useState("Tous");
@@ -29,7 +40,42 @@ export default function Dashboard() {
   const [ofsMode, setOfsMode] = useState(false);
   const [selected, setSelected] = useState<Municipality | null>(null);
 
-  useEffect(() => { fetch("/data/municipalities.json").then((response) => response.json()).then(setData); }, []);
+  const loadData = async () => {
+    setRefreshing(true);
+    try {
+      const rows: DatabaseMunicipality[] = [];
+      for (let from = 0; ; from += 1000) {
+        const response = await fetch(`${supabaseUrl}/rest/v1/GemeindeAktuell?select=*&order=bfs_id`, {
+          headers: { apikey: supabaseKey, Range: `${from}-${from + 999}` },
+          cache: "no-store",
+        });
+        if (!response.ok) throw new Error(`Supabase ${response.status}`);
+        const page = await response.json() as DatabaseMunicipality[];
+        rows.push(...page);
+        if (page.length < 1000) break;
+      }
+      const municipalities = rows.map((item): Municipality => ({
+        id: item.bfs_id, name: item.name, canton: item.canton, market: item.market,
+        expectedPopulation: item.expected_population ?? 0, receivedPopulation: item.received_population,
+        receivedOn: item.received_on ?? "", comment: item.comment ?? "", echVersion: item.ech_version ?? "",
+        missingEwid: item.missing_ewid, ewidErrorRate: item.ewid_error_rate,
+        deliveryStatus: item.delivery_status ?? "unknown", software: item.software ?? "",
+        integrator: item.integrator ?? "", isPrime: item.integrator === "Prime",
+        salesStatus: item.sales_status ?? "none", notes: item.notes ?? "",
+      }));
+      const referenceDate = rows.find((item) => item.reference_date)?.reference_date ?? "";
+      setData({ meta: { referenceDate, municipalityCount: municipalities.length, expectedPopulation: municipalities.reduce((sum, item) => sum + item.expectedPopulation, 0) }, municipalities });
+      setDataSource("database");
+    } catch {
+      const response = await fetch("/data/municipalities.json");
+      setData(await response.json());
+      setDataSource("fallback");
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => { void loadData(); }, []);
   const municipalities = data?.municipalities ?? [];
   const cantons = useMemo(() => [...new Set(municipalities.map((item) => item.canton))].sort(), [municipalities]);
   const integrators = useMemo(() => [...new Set(municipalities.map((item) => item.integrator).filter(Boolean))].sort(), [municipalities]);
@@ -51,7 +97,7 @@ export default function Dashboard() {
     <header className="topbar">
       <img src="/prime-logo.png" className="brand" alt="Prime technologies" />
       <nav className="nav-tabs" aria-label="Navigation principale"><button className="nav-tab active">Vue d’ensemble</button><button className="nav-tab">Communes</button><button className="nav-tab">Analyses</button></nav>
-      <div className="sync-state"><span /> Données au 30.06.2026</div>
+      <button className="sync-state" onClick={() => void loadData()} disabled={refreshing} title="Recharger les données depuis Supabase"><span /> {refreshing ? "Actualisation…" : `Données au ${data?.meta.referenceDate ? new Date(`${data.meta.referenceDate}T00:00:00`).toLocaleDateString("fr-CH") : "—"}`} · {dataSource === "fallback" ? "copie locale" : "base live"}</button>
     </header>
     <section className="workspace">
       <div className="intro-row"><div><p className="eyebrow">Marché suisse · Delimo P99</p><h1>Les communes.<br /><span>Enfin lisibles.</span></h1></div><p className="intro-copy">Une vue unique du marché communal suisse : population, qualité des livraisons, logiciels et opportunités.</p></div>
