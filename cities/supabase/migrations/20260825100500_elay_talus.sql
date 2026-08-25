@@ -13,6 +13,13 @@ on conflict (bfs_id) do update set
   notes = excluded.notes,
   updated_at = now();
 
+-- Commercial market follows the Jura bernois district, including its
+-- German-majority micro-municipalities.
+update public."Gemeinde"
+set market = 'Welsch'
+where canton = 'BE'
+  and lower(name) in ('elay (seehof)', 'elay', 'seehof', 'la scheulte (schelten)', 'la scheulte', 'schelten', 'mont-tramelan', 'rebévelier', 'rebeuvelier');
+
 insert into supabase_migrations.schema_migrations(version, statements, name)
-values ('20260825100500', array['Set Elay (Seehof) to Talus | innosolvcity while preserving Welsch market'], 'elay_talus')
+values ('20260825100500', array['Set Elay (Seehof) to Talus | innosolvcity','Keep the four Jura bernois language exceptions in the Welsch commercial market'], 'elay_talus')
 on conflict (version) do nothing;
