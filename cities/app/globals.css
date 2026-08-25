@@ -76,3 +76,17 @@
   .table-wrap table{min-width:920px}
   .market-cell{white-space:nowrap}
 }
+
+
+/* Discreet product and data attribution */
+.site-footer{display:flex;align-items:center;justify-content:space-between;gap:24px;width:min(1460px,calc(100% - 56px));margin:4px auto 0;padding:22px 0 30px;border-top:1px solid rgba(255,255,255,.07);color:#66758a;font-size:11px;letter-spacing:.015em}
+.footer-meta,.footer-legal{display:flex;align-items:center;gap:18px}
+.site-footer span,.site-footer a{white-space:nowrap}
+.footer-confidential{color:#9b7d72}
+.site-footer a{color:#71849b;text-decoration:none;transition:color .16s ease}
+.site-footer a:hover{color:#79bff0}
+@media(max-width:680px){
+  .site-footer{display:block;width:calc(100% - 36px);margin-top:2px;padding:20px 0 28px;font-size:10px;line-height:1.6}
+  .footer-meta,.footer-legal{flex-wrap:wrap;gap:4px 14px}
+  .footer-legal{margin-top:6px}
+}
