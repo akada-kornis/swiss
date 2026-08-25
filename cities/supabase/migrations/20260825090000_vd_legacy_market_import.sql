@@ -176,3 +176,11 @@ left join public."Software" sw on sw.code = src.software_code
 where gp.bfs_id = g.bfs_id
   and (gp.vp_id is null or gp.vp_id = vp.id)
   and (src.software_code is null or gp.software_id is null or gp.software_id = sw.id);
+
+insert into supabase_migrations.schema_migrations(version, statements, name)
+values (
+  '20260825090000',
+  array['Import the legacy VD market survey without overwriting newer profiles'],
+  'vd_legacy_market_import'
+)
+on conflict (version) do nothing;
