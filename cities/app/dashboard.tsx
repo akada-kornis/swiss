@@ -36,7 +36,8 @@ function delimoSummary(comment: string, status: Municipality["deliveryStatus"]) 
 function StatusDot({ status, comment = "" }: { status: Municipality["deliveryStatus"]; comment?: string }) {
   const label = status === "accepted" ? "Acceptée" : status === "warning" ? "Attention" : status === "missing" ? "Non livrée" : "Erreur";
   const summary = delimoSummary(comment, status);
-  return <span className="status-help" tabIndex={0} aria-label={`${label} : ${summary}`}><span className={`status-dot ${status}`} /><span className="status-tooltip" role="tooltip"><strong>{label}</strong><span>{summary}</span><small>Cliquez sur la commune pour le détail OFS</small></span></span>;
+  const detail = comment ? `${label} — ${comment}` : `${label} — ${summary}`;
+  return <span className="status-help" tabIndex={0} title={detail} aria-label={detail}><span className={`status-dot ${status}`} /><span className="status-info" aria-hidden="true">i</span><span className="status-tooltip" role="tooltip"><strong>{label}</strong><span>{summary}</span><small>Cliquez sur la commune pour le détail OFS</small></span></span>;
 }
 
 export default function Dashboard() {
@@ -45,7 +46,7 @@ export default function Dashboard() {
   const [refreshing, setRefreshing] = useState(false);
   const [query, setQuery] = useState("");
   const [canton, setCanton] = useState("Tous");
-  const [software, setSoftware] = useState("Tous");
+  const [solution, setSolution] = useState("Tous");
   const [primeOnly, setPrimeOnly] = useState(false);
   const [eadminOnly, setEadminOnly] = useState(false);
   const [issuesOnly, setIssuesOnly] = useState(false);
@@ -91,11 +92,15 @@ export default function Dashboard() {
   useEffect(() => { void loadData(); }, []);
   const municipalities = data?.municipalities ?? [];
   const cantons = useMemo(() => [...new Set(municipalities.map((item) => item.canton))].sort(), [municipalities]);
-  const integrators = useMemo(() => [...new Set(municipalities.map((item) => item.integrator).filter(Boolean))].sort(), [municipalities]);
+  const solutions = useMemo(() => [...new Map(municipalities.filter((item) => item.integrator || item.software).map((item) => {
+    const value = `${item.integrator}\u0000${item.software}`;
+    const label = `${item.integrator || "À compléter"} | ${item.software || "—"}`;
+    return [value, { value, label }];
+  })).values()].sort((a, b) => a.label.localeCompare(b.label, "fr-CH", { sensitivity: "base" })), [municipalities]);
   const filtered = useMemo(() => municipalities.filter((item) => {
     const needle = query.trim().toLocaleLowerCase("fr-CH");
     return (!needle || `${item.name} ${item.canton} ${item.software} ${item.integrator}`.toLocaleLowerCase("fr-CH").includes(needle))
-      && (canton === "Tous" || item.canton === canton) && (software === "Tous" || item.integrator === software)
+      && (canton === "Tous" || item.canton === canton) && (solution === "Tous" || `${item.integrator}\u0000${item.software}` === solution)
       && (!primeOnly || item.isPrime) && (!eadminOnly || item.products.includes("eAdmin"))
       && (!issuesOnly || item.deliveryStatus !== "accepted");
   }).sort((a, b) => {
@@ -103,7 +108,7 @@ export default function Dashboard() {
       ? a.expectedPopulation - b.expectedPopulation
       : a.name.localeCompare(b.name, "fr-CH", { sensitivity: "base" });
     return sort.direction === "asc" ? comparison : -comparison;
-  }), [municipalities, query, canton, software, primeOnly, eadminOnly, issuesOnly, sort]);
+  }), [municipalities, query, canton, solution, primeOnly, eadminOnly, issuesOnly, sort]);
   const changeSort = (key: "population" | "name") => setSort((current) => current.key === key
     ? { key, direction: current.direction === "asc" ? "desc" : "asc" }
     : { key, direction: key === "population" ? "desc" : "asc" });
@@ -114,7 +119,7 @@ export default function Dashboard() {
     const totalPopulation = municipalities.reduce((sum, item) => sum + item.expectedPopulation, 0);
     return { over10k: over10k.length, over10kPopulation, over10kShare: municipalities.length ? over10k.length / municipalities.length * 100 : 0, over10kPopulationShare: totalPopulation ? over10kPopulation / totalPopulation * 100 : 0, prime: prime.length, primePopulation: prime.reduce((sum, item) => sum + item.expectedPopulation, 0), issues: municipalities.filter((item) => item.deliveryStatus !== "accepted").length };
   }, [municipalities]);
-  const reset = () => { setQuery(""); setCanton("Tous"); setSoftware("Tous"); setPrimeOnly(false); setEadminOnly(false); setIssuesOnly(false); };
+  const reset = () => { setQuery(""); setCanton("Tous"); setSolution("Tous"); setPrimeOnly(false); setEadminOnly(false); setIssuesOnly(false); };
 
   return <main className="app-shell">
     <div className="ambient ambient-one" /><div className="ambient ambient-two" />
@@ -136,7 +141,7 @@ export default function Dashboard() {
         <div className="filters">
           <label className="search"><span>⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Rechercher une commune, un logiciel…" /></label>
           <label><span>Canton</span><select value={canton} onChange={(event) => setCanton(event.target.value)}><option>Tous</option>{cantons.map((value) => <option key={value}>{value}</option>)}</select></label>
-          <label><span>Intégrateur</span><select value={software} onChange={(event) => setSoftware(event.target.value)}><option>Tous</option>{integrators.map((value) => <option key={value}>{value}</option>)}</select></label>
+          <label><span>Solution</span><select value={solution} onChange={(event) => setSolution(event.target.value)}><option value="Tous">Toutes</option>{solutions.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label>
           <button className={`filter-toggle ${primeOnly ? "on" : ""}`} onClick={() => setPrimeOnly(!primeOnly)}>Clients Prime</button>
           <button className={`filter-toggle ${eadminOnly ? "on eadmin-on" : ""}`} onClick={() => setEadminOnly(!eadminOnly)}>eAdmin</button>
           {ofsMode && <button className={`filter-toggle ${issuesOnly ? "on warning" : ""}`} onClick={() => setIssuesOnly(!issuesOnly)}>À surveiller</button>}
