@@ -43,3 +43,36 @@
   .filters .market-toggles,.filters .filter-toggle{flex:0 0 auto;white-space:nowrap}
   .market-toggles .market-toggle{white-space:nowrap}
 }
+
+
+/* Responsive explorer and contextual canton/district selector */
+.canton-district-group{display:flex;align-items:stretch;min-width:150px;border:1px solid rgba(255,255,255,.075);border-radius:11px;background:#090e18;overflow:hidden}
+.canton-district-group label{border:0!important;border-radius:0!important;background:transparent!important;min-width:0!important}
+.canton-district-group label+label{border-left:1px solid rgba(255,255,255,.075)!important}
+.canton-district-group .canton-filter{min-width:145px!important}
+.canton-district-group #districtFilter{min-width:175px!important}
+.market-toggles .market-toggle,#primeOnly{white-space:nowrap}
+.table-wrap{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media(min-width:1101px){
+  .filters .canton-district-group{flex:0 1 auto}
+  .filters .canton-district-group label{flex:0 1 auto}
+}
+@media(max-width:680px){
+  html,body,.app-shell{max-width:100%;overflow-x:hidden}
+  .workspace,.data-panel{min-width:0}
+  .filters,.filters.districts-on{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;width:100%;min-width:0}
+  .filters .search{grid-column:1/-1;min-width:0}
+  .filters .market-toggles{grid-column:1/-1;width:100%;min-width:0}
+  .market-toggles .market-toggle{flex:1;min-width:0;padding:0 5px;white-space:nowrap}
+  .filters .canton-district-group{grid-column:1/-1;width:100%;min-width:0}
+  .canton-district-group .canton-filter,.canton-district-group #districtFilter{flex:1 1 50%;min-width:0!important}
+  .filters .solution-filter{grid-column:1/-1;min-width:0}
+  .filters #primeOnly{grid-column:1/3}
+  .filters #eadminOnly{grid-column:3/5}
+  .filters #districtsToggle{grid-column:5/7}
+  .filters #issuesOnly{grid-column:1/-1}
+  .filters label,.filters select,.filters input,.filters button{min-width:0}
+  .result-line{flex-wrap:wrap}
+  .table-wrap table{min-width:920px}
+  .market-cell{white-space:nowrap}
+}
