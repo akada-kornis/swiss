@@ -291,11 +291,12 @@ update public."Gemeinde" set market='CH-D' where bfs_id=2275; -- Morat
 
 create or replace view public."GemeindeAktuell" as
 select distinct on (g.bfs_id)
-  g.bfs_id,g.name,g.canton,g.market,g.active,g.bezirk_code,b.name as bezirk,
+  g.bfs_id,g.name,g.canton,g.market,g.active,
   ds.expected_population,ds.received_population,ds.received_on,ds.delivery_status,ds.comment,ds.ech_version,ds.missing_ewid,ds.ewid_error_rate,
   vp.name as integrator,sw.name as software,gp.sales_status,gp.confidence,gp.notes,gp.updated_at as profile_updated_at,
   di.reference_date,di.completed_at as delimo_updated_at,
-  coalesce((select array_agg(p.name order by p.name) from public."GemeindeProduct" gpr join public."Product" p on p.id=gpr.product_id where gpr.bfs_id=g.bfs_id), '{}'::text[]) as products
+  coalesce((select array_agg(p.name order by p.name) from public."GemeindeProduct" gpr join public."Product" p on p.id=gpr.product_id where gpr.bfs_id=g.bfs_id), '{}'::text[]) as products,
+  g.bezirk_code,b.name as bezirk
 from public."Gemeinde" g
 left join public."Bezirk" b on b.code=g.bezirk_code
 left join public."GemeindeProfil" gp on gp.bfs_id=g.bfs_id
@@ -307,5 +308,4 @@ order by g.bfs_id,di.completed_at desc nulls last;
 grant select on public."GemeindeAktuell" to anon,authenticated;
 
 insert into supabase_migrations.schema_migrations(version,statements,name) values ('20260825095000',array['Add Bezirk district reference data for BE Jura bernois, FR and VS','Apply confirmed commercial language-market rules','Expose district in GemeindeAktuell'],'district_language_markets') on conflict(version) do nothing;
-
 
