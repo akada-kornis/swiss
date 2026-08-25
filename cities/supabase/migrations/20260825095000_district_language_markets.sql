@@ -281,6 +281,52 @@ with mapping(bfs_id,bezirk_code) as (values
 (6011,'VS-BRIGUE')
 ) update public."Gemeinde" g set bezirk_code=m.bezirk_code from mapping m where g.bfs_id=m.bfs_id;
 
+-- Jura bernois table layout differs from the FR/VS tables; keep its 39 OFS
+-- identifiers explicit so the migration remains deterministic.
+with mapping(bfs_id,bezirk_code) as (values
+(681,'BE-JURA-BERNOIS'),
+(683,'BE-JURA-BERNOIS'),
+(687,'BE-JURA-BERNOIS'),
+(431,'BE-JURA-BERNOIS'),
+(432,'BE-JURA-BERNOIS'),
+(433,'BE-JURA-BERNOIS'),
+(690,'BE-JURA-BERNOIS'),
+(434,'BE-JURA-BERNOIS'),
+(691,'BE-JURA-BERNOIS'),
+(709,'BE-JURA-BERNOIS'),
+(692,'BE-JURA-BERNOIS'),
+(694,'BE-JURA-BERNOIS'),
+(435,'BE-JURA-BERNOIS'),
+(723,'BE-JURA-BERNOIS'),
+(708,'BE-JURA-BERNOIS'),
+(696,'BE-JURA-BERNOIS'),
+(437,'BE-JURA-BERNOIS'),
+(724,'BE-JURA-BERNOIS'),
+(438,'BE-JURA-BERNOIS'),
+(701,'BE-JURA-BERNOIS'),
+(450,'BE-JURA-BERNOIS'),
+(716,'BE-JURA-BERNOIS'),
+(726,'BE-JURA-BERNOIS'),
+(715,'BE-JURA-BERNOIS'),
+(703,'BE-JURA-BERNOIS'),
+(441,'BE-JURA-BERNOIS'),
+(704,'BE-JURA-BERNOIS'),
+(442,'BE-JURA-BERNOIS'),
+(706,'BE-JURA-BERNOIS'),
+(443,'BE-JURA-BERNOIS'),
+(449,'BE-JURA-BERNOIS'),
+(707,'BE-JURA-BERNOIS'),
+(444,'BE-JURA-BERNOIS'),
+(445,'BE-JURA-BERNOIS'),
+(711,'BE-JURA-BERNOIS'),
+(713,'BE-JURA-BERNOIS'),
+(446,'BE-JURA-BERNOIS'),
+(717,'BE-JURA-BERNOIS'),
+(448,'BE-JURA-BERNOIS')
+)
+update public."Gemeinde" g set bezirk_code=m.bezirk_code from mapping m
+where g.bfs_id=m.bfs_id and g.canton='BE';
+
 -- Commercial language markets confirmed by the user.
 update public."Gemeinde" set market='Welsch' where bezirk_code='BE-JURA-BERNOIS';
 update public."Gemeinde" set market=case when bezirk_code in ('VS-CONTHEY','VS-ENTREMONT','VS-HERENS','VS-MARTIGNY','VS-MONTHEY','VS-SAINT-MAURICE','VS-SIERRE','VS-SION') then 'Welsch' else 'CH-D' end where canton='VS' and bezirk_code is not null;
@@ -308,4 +354,3 @@ order by g.bfs_id,di.completed_at desc nulls last;
 grant select on public."GemeindeAktuell" to anon,authenticated;
 
 insert into supabase_migrations.schema_migrations(version,statements,name) values ('20260825095000',array['Add Bezirk district reference data for BE Jura bernois, FR and VS','Apply confirmed commercial language-market rules','Expose district in GemeindeAktuell'],'district_language_markets') on conflict(version) do nothing;
-
