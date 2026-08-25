@@ -17,3 +17,4 @@
 .delivery-verdict span { margin-top: 3px; color: #718399; font-size: 12px; }
 /* Compact three-way market selector: one active language market at a time. */
 .market-toggles{display:flex;gap:4px;padding:4px;border:1px solid rgba(255,255,255,.075);border-radius:11px;background:#090e18}.market-toggles .filter-toggle{min-height:32px;border:0;padding:0 10px;background:transparent}.market-toggles .filter-toggle.on{background:rgba(10,102,170,.25)}
+.filters{grid-template-columns:minmax(240px,1.4fr) auto .5fr .7fr auto auto}
