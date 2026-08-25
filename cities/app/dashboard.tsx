@@ -22,7 +22,7 @@ const number = new Intl.NumberFormat("fr-CH");
 const percent = new Intl.NumberFormat("fr-CH", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const supabaseUrl = "https://ozdvmllgxduzquiujcbg.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96ZHZtbGxneGR1enF1aXVqY2JnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1NzkwNTIsImV4cCI6MjEwMzE1NTA1Mn0.mVT0_dqcpAzb3QxmC5xDmB8bq7RZrpDd5dpvnGKPaTw";
-const supplierChoices = ["Prime", "Data", "Ofisa", "T2i", "SIACG", "OBT", "Talus", "Etic@SIEN", "Ciges"];
+const supplierChoices = ["Axians", "Ciges", "Crésus", "Data", "Epsilon", "InfoManaging", "OBT", "Ofisa", "Prime", "SIACG", "SIEN", "T2i", "Talus"];
 const softwareChoices = ["innosolvcity", "Urbanus", "Calvin", "Citizen", "ETIC", "BDI", "Ruf"];
 
 function delimoSummary(comment: string, status: Municipality["deliveryStatus"]) {
