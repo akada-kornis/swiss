@@ -90,3 +90,45 @@
   .footer-meta,.footer-legal{flex-wrap:wrap;gap:4px 14px}
   .footer-legal{margin-top:6px}
 }
+
+/* Minimal two-view navigation */
+.view-tabs{display:flex;align-items:center;gap:4px;margin-left:34px;padding:4px;border:1px solid rgba(255,255,255,.075);border-radius:12px;background:rgba(255,255,255,.025)}
+.view-tab{min-height:32px;padding:0 13px;border:0;border-radius:8px;background:transparent;color:#7f8b9f;font-size:12px;font-weight:650;cursor:pointer;transition:color .16s ease,background .16s ease}
+.view-tab:hover{color:#d9e2ed}
+.view-tab.active{color:#fff;background:rgba(24,126,201,.2);box-shadow:inset 0 0 0 1px rgba(74,170,240,.16)}
+
+/* Roadmap view */
+.roadmap-view{padding-bottom:12px}
+.roadmap-intro{display:grid;grid-template-columns:minmax(420px,1fr) minmax(320px,470px);align-items:end;justify-content:space-between;gap:50px;margin-bottom:34px}
+.roadmap-intro-copy{padding:0 0 7px;color:#98a5b7;font-size:16px;line-height:1.65}
+.roadmap-intro-copy p{margin:0}
+.roadmap-intro-copy strong{display:block;margin-top:12px;color:#dce5ef;font-size:14px}
+.roadmap-principle{display:grid;grid-template-columns:170px 1fr;gap:22px;align-items:center;margin-bottom:18px;padding:18px 22px;border:1px solid rgba(73,166,232,.2);border-radius:18px;background:linear-gradient(100deg,rgba(9,100,165,.2),rgba(97,74,207,.08) 58%,rgba(255,75,32,.06))}
+.roadmap-principle span{color:#75bff2;font-size:11px;font-weight:750;letter-spacing:.13em;text-transform:uppercase}
+.roadmap-principle p{margin:0;color:#b6c1cf;font-size:14px;line-height:1.55}
+.roadmap-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.roadmap-stage{position:relative;overflow:hidden;padding:25px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));box-shadow:0 22px 60px rgba(0,0,0,.22)}
+.roadmap-stage:before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,#218ddc,#7457ff);opacity:.9}
+.roadmap-stage.map-stage:before{background:linear-gradient(90deg,#7457ff,#df4c2c)}
+.roadmap-stage.history-stage:before{background:linear-gradient(90deg,#36b89a,#1780ce)}
+.roadmap-stage.ai-stage:before{background:linear-gradient(90deg,#ff5a32,#8d55ff)}
+.roadmap-stage>header{display:flex;align-items:center;gap:15px}
+.roadmap-version{display:grid;place-items:center;flex:0 0 54px;height:54px;border:1px solid rgba(91,181,241,.22);border-radius:16px;color:#82caff;background:rgba(11,112,181,.16);font-size:16px;font-weight:760}
+.roadmap-stage header p{margin:0 0 4px;color:#6f7e91;font-size:10px;font-weight:750;letter-spacing:.14em;text-transform:uppercase}
+.roadmap-stage h2{margin:0;font-size:21px;letter-spacing:-.025em}
+.roadmap-goal{min-height:45px;margin:18px 0;color:#8996a8;font-size:13px;line-height:1.55}
+.roadmap-items{display:grid;gap:9px}
+.roadmap-items>div{padding:14px 15px;border:1px solid rgba(255,255,255,.06);border-radius:13px;background:rgba(3,7,13,.28)}
+.roadmap-items strong,.roadmap-items span,.roadmap-items small{display:block}
+.roadmap-items strong{color:#dce4ed;font-size:13px}
+.roadmap-items span{margin-top:5px;color:#7f8da0;font-size:12px;line-height:1.48}
+.roadmap-items small{margin-top:9px;color:#5faede;font-size:10px;font-weight:650}
+.roadmap-energy-note{margin:16px 2px 0;color:#5f6d80;font-size:10px;line-height:1.5}
+@media(max-width:900px){.roadmap-intro{grid-template-columns:1fr}.roadmap-intro-copy{max-width:600px}.roadmap-grid{grid-template-columns:1fr}}
+@media(max-width:680px){
+  .topbar{gap:10px}.view-tabs{margin-left:auto}.view-tab{padding:0 9px}.sync-state{margin-left:0}
+  .intro-row{margin-bottom:28px}.intro-summary{margin-top:22px}.intro-summary .eyebrow{margin-bottom:8px}
+  .roadmap-intro{display:block;margin-bottom:26px}.roadmap-intro-copy{margin-top:24px;font-size:14px}
+  .roadmap-principle{grid-template-columns:1fr;gap:8px;padding:16px}.roadmap-stage{padding:18px;border-radius:19px}
+  .roadmap-goal{min-height:0}.roadmap-version{flex-basis:48px;height:48px}.roadmap-stage h2{font-size:18px}
+}
