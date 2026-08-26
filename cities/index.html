@@ -9,7 +9,7 @@
 <title>Prime Communes</title>
   <meta name="description" content="Observatoire du marché communal suisse par Prime technologies.">
   <link rel="icon" href="public/favicon-prime-communes.png?v=3">
-  <link rel="stylesheet" href="app/globals.css?v=6">
+  <link rel="stylesheet" href="app/globals.css?v=7">
   <link rel="stylesheet" href="app/product-assets.css?v=4">
 <style>th.sortable{cursor:pointer;user-select:none}th.sortable:hover{color:#b8c7da;background:rgba(255,255,255,.045)}</style>
 </head>
@@ -18,10 +18,15 @@
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
   <header class="topbar">
     <img src="public/prime-logo-negative.svg" class="brand" alt="Prime technologies">
+    <nav class="view-tabs" aria-label="Navigation principale">
+      <button class="view-tab active" data-view="communes">Communes</button>
+      <button class="view-tab" data-view="roadmap">Roadmap</button>
+    </nav>
     <button class="sync-state" id="syncReload" title="Recharger depuis Supabase"><span></span><b id="syncText">Connexion à la base…</b></button>
   </header>
   <section class="workspace">
-    <div class="intro-row"><div><p class="eyebrow">Marché suisse · Delimo P99</p><h1>Les communes.<br><span>Enfin lisibles.</span></h1></div><div class="intro-summary"><p class="intro-copy">Une vue unique du marché communal suisse : population, qualité des livraisons, logiciels et opportunités.</p><p class="intro-count"><strong id="headerCommuneCount">—</strong> communes, une seule vue</p></div></div>
+    <div id="communesView">
+    <div class="intro-row"><div><h1>Les communes.<br><span>Enfin lisibles.</span></h1></div><div class="intro-summary"><p class="eyebrow">Marché suisse · Delimo P99</p><p class="intro-copy">Une vue unique du marché communal suisse : population, qualité des livraisons, logiciels et opportunités.</p><p class="intro-count"><strong id="headerCommuneCount">—</strong> communes, une seule vue</p></div></div>
     <section class="kpi-grid">
       <article class="kpi-card hero-kpi"><div class="kpi-top"><span class="kpi-label">Population couverte</span><span class="kpi-country"><img class="swiss-mark" src="public/swiss-mark.svg" alt="Suisse"><span class="kpi-badge">100%</span></span></div><strong id="population">—</strong><p><span id="communeCount">—</span> communes</p><div class="sparkline"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
       <article class="kpi-card"><div class="kpi-top"><span class="kpi-label">Communes ≥ 10’000</span><span class="kpi-badge" id="over10kShare">—</span></div><strong id="over10k">—</strong><p><span id="over10kPop">—</span> habitants · <span id="over10kPopShare">—</span> du pays</p></article>
@@ -42,10 +47,58 @@
       <div class="result-line"><span><strong id="resultCount">0</strong> résultats <button id="reset">Réinitialiser</button></span><button class="result-export" id="exportBtn">↓ Exporter (.tsv)</button></div>
       <div class="table-wrap"><table><thead id="tableHead"></thead><tbody id="rows"></tbody></table><p class="table-limit" id="limit"></p></div>
     </section>
+    </div>
+    <section class="roadmap-view" id="roadmapView" hidden>
+      <div class="roadmap-intro">
+        <div><p class="eyebrow">Prime Communes · Vision produit</p><h1>La suite.<br><span>Déjà pensée.</span></h1></div>
+        <div class="roadmap-intro-copy"><p>Construire aujourd’hui les fondations nécessaires aux étages futurs, même si toutes les fonctions ne sont pas encore visibles.</p><strong>De l’observatoire au copilote du marché communal suisse.</strong></div>
+      </div>
+      <div class="roadmap-principle"><span>Principe directeur</span><p>Chaque choix doit rester propre lorsque nous ajouterons la carte, les statistiques, les finances, plusieurs logiciels, l’historique, les droits nominatifs et l’IA.</p></div>
+      <div class="roadmap-grid">
+        <article class="roadmap-stage current">
+          <header><span class="roadmap-version">1.1</span><div><p>Fondations</p><h2>Sécuriser, expliquer, mesurer</h2></div></header>
+          <p class="roadmap-goal">Transformer la 1.0 en application interne fiable et préparer toutes les extensions.</p>
+          <div class="roadmap-items">
+            <div><strong>Authentification · rôles · RLS</strong><span>Accès nominatifs TeamVente, Direction et Admin. Sécurité appliquée dans la base.</span><small>16–30 h · 40–90 crédits · 0,2–0,8 kWh · ≈ 12–48 recharges</small></div>
+            <div><strong>Audit trail</strong><span>Savoir qui a créé, modifié, validé ou supprimé chaque information.</span><small>8–16 h · 20–45 crédits · 0,08–0,35 kWh · ≈ 5–21 recharges</small></div>
+            <div><strong>Statistiques</strong><span>Parts de marché par communes ou habitants, canton, district, seuil et marché libéralisé.</span><small>10–20 h · 25–55 crédits · 0,1–0,5 kWh · ≈ 6–30 recharges</small></div>
+            <div><strong>Modèle multi-produits</strong><span>innosolv, ProConcept, Abacus, LCM, eAdmin et les autres solutions Prime.</span><small>12–28 h · 30–75 crédits · 0,15–0,7 kWh · ≈ 9–42 recharges</small></div>
+          </div>
+        </article>
+        <article class="roadmap-stage map-stage">
+          <header><span class="roadmap-version">1.5</span><div><p>Marché</p><h2>Voir et agir</h2></div></header>
+          <p class="roadmap-goal">Passer de l’observation à l’action commerciale.</p>
+          <div class="roadmap-items">
+            <div><strong>Carte suisse interactive</strong><span>2’110 surfaces communales, survol, fiche, zoom et coloration par intégrateur, logiciel, potentiel ou marge.</span><small>12–24 h · 30–65 crédits · 0,12–0,6 kWh · ≈ 7–36 recharges</small></div>
+            <div><strong>Leads et forecast</strong><span>Responsable, prochaine action, probabilité, échéance et valeur estimée.</span><small>14–28 h · 35–80 crédits · 0,15–0,8 kWh · ≈ 9–48 recharges</small></div>
+            <div><strong>Données financières</strong><span>PA, PV, LCM, marge, récurrence et historique tarifaire selon les droits.</span><small>16–36 h · 40–100 crédits · 0,2–1,0 kWh · ≈ 12–60 recharges</small></div>
+          </div>
+        </article>
+        <article class="roadmap-stage history-stage">
+          <header><span class="roadmap-version">2.0</span><div><p>Observatoire</p><h2>Comprendre l’histoire</h2></div></header>
+          <p class="roadmap-goal">Représenter le marché Prime dans toute sa profondeur et son évolution.</p>
+          <div class="roadmap-items">
+            <div><strong>Historique Delimo</strong><span>Photographies successives, retour dans le temps, population, fusions et qualité des livraisons.</span><small>12–26 h · 30–70 crédits · 0,15–0,7 kWh · ≈ 9–42 recharges</small></div>
+            <div><strong>Mouvements de marché</strong><span>Gains, pertes, migrations et changements de fournisseurs avec provenance et dates.</span><small>Énergie à préciser après inventaire des sources</small></div>
+            <div><strong>Carte et statistiques temporelles</strong><span>Comparer instantanément deux dates avec le même moteur de filtres.</span><small>Dépend des fondations 1.1 et de la carte 1.5</small></div>
+          </div>
+        </article>
+        <article class="roadmap-stage ai-stage">
+          <header><span class="roadmap-version">3.0</span><div><p>Copilote IA</p><h2>Développer le marché</h2></div></header>
+          <p class="roadmap-goal">Utiliser l’IA pour trouver, expliquer et prioriser les opportunités — avec sources et validation humaine.</p>
+          <div class="roadmap-items">
+            <div><strong>Opportunités marché</strong><span>Croiser les données Prime avec le web, les médias et les publications publiques.</span><small>40–100 h · 100–300+ crédits · 0,8–4 kWh · ≈ 48–240 recharges</small></div>
+            <div><strong>Mise à jour web et PV</strong><span>Rechercher budgets, décisions, logiciels, intégrateurs et projets dans les documents communaux.</span><small>35–90 h · 90–250+ crédits · 0,7–3,5 kWh · ≈ 42–210 recharges</small></div>
+            <div><strong>Veille intégrateurs et logiciels</strong><span>Distinguer clairement faits sourcés, déductions et avis de l’IA.</span><small>25–60 h · 70–180+ crédits · 0,5–2,5 kWh · ≈ 30–150 recharges</small></div>
+          </div>
+        </article>
+      </div>
+      <p class="roadmap-energy-note">Les heures et crédits sont des enveloppes de planification. Les kWh et équivalents de recharge restent des ordres de grandeur illustratifs, pas une comptabilité carbone.</p>
+    </section>
   </section>
   <footer class="site-footer" aria-label="Informations légales et techniques">
     <div class="footer-meta">
-      <span>Prime Communes · version 1.0.0</span>
+      <span>Prime Communes · version 1.0.1</span>
       <span class="footer-confidential">Données confidentielles</span>
     </div>
     <div class="footer-legal">
@@ -101,6 +154,7 @@ function openDrawer(x){
 }
 function closeDrawer(){$('drawerRoot').innerHTML=''}
 $('query').addEventListener('input',render);$('solution').addEventListener('change',render);$('district').addEventListener('change',render);$('canton').addEventListener('change',()=>{$('district').value='';updateDistrictOptions();render()});$('primeOnly').onclick=()=>{primeOnly=!primeOnly;$('primeOnly').classList.toggle('on',primeOnly);render()};$('eadminOnly').onclick=()=>{eadminOnly=!eadminOnly;$('eadminOnly').classList.toggle('on',eadminOnly);$('eadminOnly').classList.toggle('eadmin-on',eadminOnly);render()};$('districtsToggle').onclick=()=>{districtsMode=!districtsMode;$('districtsToggle').classList.toggle('on',districtsMode);render()};document.querySelectorAll('.market-toggle').forEach(button=>button.onclick=()=>{marketOnly=marketOnly===button.dataset.market?'':button.dataset.market;document.querySelectorAll('.market-toggle').forEach(x=>x.classList.toggle('on',x.dataset.market===marketOnly));render()});$('issuesOnly').onclick=()=>{issuesOnly=!issuesOnly;$('issuesOnly').classList.toggle('on',issuesOnly);$('issuesOnly').classList.toggle('warning',issuesOnly);render()};$('issuesCard').onclick=()=>{ofsMode=!ofsMode; if(!ofsMode)issuesOnly=false; $('issuesOnly').hidden=!ofsMode; $('issuesCard').classList.toggle('ofs-active',ofsMode); $('ofsLabel').textContent=ofsMode?$('issues').textContent:'Ouvrir'; $('ofsCopy').textContent=ofsMode?'Revenir à la vue de marché':'Afficher les statuts Delimo'; $('ofsArrow').textContent=ofsMode?'←':'→'; render()};$('reset').onclick=()=>{$('query').value='';$('canton').value='Tous';$('district').value='';$('solution').value='Tous';primeOnly=eadminOnly=issuesOnly=false;marketOnly='';updateDistrictOptions();document.querySelectorAll('.filter-toggle').forEach(x=>{if(x.id!=='districtsToggle')x.classList.remove('on','warning')});render()};$('syncReload').onclick=loadData;$('exportBtn').onclick=()=>{const rows=filtered(),withDistrict=districtsMode,header=['Nom','Canton',...(withDistrict?['District']:[]),'Population','Logiciel','Intégrateur'],lines=[header.join('\t'),...rows.map(x=>[x.name,x.canton,...(withDistrict?[x.district]:[]),x.expectedPopulation,x.software,x.integrator].join('\t'))];const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/tab-separated-values'}));a.download='communes.tsv';a.click()};
+document.querySelectorAll('.view-tab').forEach(button=>button.onclick=()=>{const view=button.dataset.view;document.querySelectorAll('.view-tab').forEach(tab=>tab.classList.toggle('active',tab===button));$('communesView').hidden=view!=='communes';$('roadmapView').hidden=view!=='roadmap';$('syncReload').hidden=view!=='communes';window.scrollTo({top:0,behavior:'smooth'})});
 </script>
 </body>
 </html>
