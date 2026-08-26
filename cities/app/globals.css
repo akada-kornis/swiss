@@ -102,7 +102,24 @@
 .roadmap-intro{display:grid;grid-template-columns:minmax(420px,1fr) minmax(320px,470px);align-items:end;justify-content:space-between;gap:50px;margin-bottom:34px}
 .roadmap-intro-copy{padding:0 0 7px;color:#98a5b7;font-size:16px;line-height:1.65}
 .roadmap-intro-copy p{margin:0}
+.roadmap-intro-copy .eyebrow{margin-bottom:8px}
 .roadmap-intro-copy strong{display:block;margin-top:12px;color:#dce5ef;font-size:14px}
+.roadmap-journey{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:0 0 18px;padding:0;list-style:none}
+.roadmap-journey li{position:relative;min-width:0;padding:17px 16px 16px;border:1px solid rgba(255,255,255,.075);border-radius:16px;background:rgba(255,255,255,.025)}
+.roadmap-journey li:not(:last-child):after{content:"→";position:absolute;z-index:2;top:50%;right:-10px;display:grid;place-items:center;width:12px;height:18px;color:#556477;background:#07111d;font-size:13px;transform:translateY(-50%)}
+.roadmap-journey span,.roadmap-journey strong{display:block}
+.roadmap-journey span{margin-bottom:4px;color:#6e7b8e;font-size:11px;font-weight:800;letter-spacing:.08em}
+.roadmap-journey strong{overflow:hidden;color:#dce5ee;font-size:16px;letter-spacing:-.02em;text-overflow:ellipsis}
+.roadmap-journey .journey-done{opacity:.62;background:rgba(135,145,158,.06)}
+.roadmap-journey .journey-done strong{color:#98a3b0}
+.roadmap-journey .journey-know{border-color:rgba(42,148,222,.25);background:rgba(15,112,181,.11)}
+.roadmap-journey .journey-know span,.roadmap-journey .journey-know strong{color:#72c4fb}
+.roadmap-journey .journey-see{border-color:rgba(126,91,255,.24);background:rgba(100,74,207,.1)}
+.roadmap-journey .journey-see span,.roadmap-journey .journey-see strong{color:#a18bff}
+.roadmap-journey .journey-understand{border-color:rgba(54,184,154,.23);background:rgba(31,135,120,.09)}
+.roadmap-journey .journey-understand span,.roadmap-journey .journey-understand strong{color:#66d3bb}
+.roadmap-journey .journey-anticipate{border-color:rgba(255,90,50,.23);background:rgba(179,61,42,.09)}
+.roadmap-journey .journey-anticipate span,.roadmap-journey .journey-anticipate strong{color:#ff7758}
 .roadmap-principle{display:grid;grid-template-columns:170px 1fr;gap:22px;align-items:center;margin-bottom:18px;padding:18px 22px;border:1px solid rgba(73,166,232,.2);border-radius:18px;background:linear-gradient(100deg,rgba(9,100,165,.2),rgba(97,74,207,.08) 58%,rgba(255,75,32,.06))}
 .roadmap-principle span{color:#75bff2;font-size:11px;font-weight:750;letter-spacing:.13em;text-transform:uppercase}
 .roadmap-principle p{margin:0;color:#b6c1cf;font-size:14px;line-height:1.55}
@@ -115,20 +132,30 @@
 .roadmap-stage>header{display:flex;align-items:center;gap:15px}
 .roadmap-version{display:grid;place-items:center;flex:0 0 54px;height:54px;border:1px solid rgba(91,181,241,.22);border-radius:16px;color:#82caff;background:rgba(11,112,181,.16);font-size:16px;font-weight:760}
 .roadmap-stage header p{margin:0 0 4px;color:#6f7e91;font-size:10px;font-weight:750;letter-spacing:.14em;text-transform:uppercase}
-.roadmap-stage h2{margin:0;font-size:21px;letter-spacing:-.025em}
-.roadmap-goal{min-height:45px;margin:18px 0;color:#8996a8;font-size:13px;line-height:1.55}
-.roadmap-items{display:grid;gap:9px}
+.roadmap-stage h2{margin:0;font-size:28px;letter-spacing:-.035em}
+.roadmap-items{display:grid;gap:9px;margin-top:22px}
 .roadmap-items>div{padding:14px 15px;border:1px solid rgba(255,255,255,.06);border-radius:13px;background:rgba(3,7,13,.28)}
 .roadmap-items strong,.roadmap-items span,.roadmap-items small{display:block}
 .roadmap-items strong{color:#dce4ed;font-size:13px}
 .roadmap-items span{margin-top:5px;color:#7f8da0;font-size:12px;line-height:1.48}
 .roadmap-items small{margin-top:9px;color:#5faede;font-size:10px;font-weight:650}
+.completed-stage{margin-bottom:14px;border-color:rgba(153,164,178,.11);background:linear-gradient(145deg,rgba(139,149,162,.065),rgba(139,149,162,.018));box-shadow:none;opacity:.72}
+.completed-stage:before{background:#758294;opacity:.45}
+.completed-stage .roadmap-version{border-color:rgba(166,176,188,.18);color:#a5afba;background:rgba(130,140,152,.09)}
+.completed-stage h2{color:#b7c0ca}
+.roadmap-done{margin-left:auto;padding:7px 10px;border:1px solid rgba(156,169,182,.18);border-radius:999px;color:#9da8b4;background:rgba(140,151,163,.07);font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase}
+.completed-items{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.completed-items span{padding:8px 11px;border:1px solid rgba(255,255,255,.055);border-radius:999px;color:#8995a2;background:rgba(3,7,13,.2);font-size:11px;font-weight:600}
 .roadmap-energy-note{margin:16px 2px 0;color:#5f6d80;font-size:10px;line-height:1.5}
-@media(max-width:900px){.roadmap-intro{grid-template-columns:1fr}.roadmap-intro-copy{max-width:600px}.roadmap-grid{grid-template-columns:1fr}}
+@media(max-width:900px){
+  .roadmap-intro{grid-template-columns:1fr}.roadmap-intro-copy{max-width:600px}.roadmap-grid{grid-template-columns:1fr}
+  .roadmap-journey{display:flex;overflow-x:auto;padding-bottom:5px;scroll-snap-type:x proximity;scrollbar-width:none}.roadmap-journey::-webkit-scrollbar{display:none}.roadmap-journey li{flex:0 0 150px;scroll-snap-align:start}
+}
 @media(max-width:680px){
   .topbar{gap:10px}.view-tabs{margin-left:auto}.view-tab{padding:0 9px}.sync-state{margin-left:0}
   .intro-row{margin-bottom:28px}.intro-summary{margin-top:22px}.intro-summary .eyebrow{margin-bottom:8px}
   .roadmap-intro{display:block;margin-bottom:26px}.roadmap-intro-copy{margin-top:24px;font-size:14px}
   .roadmap-principle{grid-template-columns:1fr;gap:8px;padding:16px}.roadmap-stage{padding:18px;border-radius:19px}
-  .roadmap-goal{min-height:0}.roadmap-version{flex-basis:48px;height:48px}.roadmap-stage h2{font-size:18px}
+  .roadmap-journey{margin-right:-16px}.roadmap-journey li{flex-basis:136px;padding:14px}.roadmap-journey strong{font-size:15px}
+  .roadmap-version{flex-basis:48px;height:48px}.roadmap-stage h2{font-size:24px}.roadmap-done{padding:6px 8px}.completed-items{gap:6px}.completed-items span{padding:7px 9px;font-size:10px}
 }
