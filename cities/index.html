@@ -9,7 +9,7 @@
 <title>Prime Communes</title>
   <meta name="description" content="Observatoire du marché communal suisse par Prime technologies.">
   <link rel="icon" href="public/favicon-prime-communes.png?v=3">
-  <link rel="stylesheet" href="app/globals.css?v=9">
+  <link rel="stylesheet" href="app/globals.css?v=10">
   <link rel="stylesheet" href="app/product-assets.css?v=4">
 <style>th.sortable{cursor:pointer;user-select:none}th.sortable:hover{color:#b8c7da;background:rgba(255,255,255,.045)}</style>
 </head>
@@ -57,15 +57,28 @@
       <section class="map-panel" aria-label="Carte interactive de la Suisse romande">
         <div class="map-toolbar">
           <label class="map-search"><span>⌕</span><input id="mapQuery" placeholder="Rechercher une commune…" autocomplete="off"></label>
-          <div class="map-mode" aria-label="Coloration de la carte">
-            <button class="active" data-map-mode="integrator">Intégrateur</button>
-            <button data-map-mode="software">Logiciel</button>
-            <button data-map-mode="eadmin">eAdmin</button>
+          <div class="map-controls">
+            <div class="map-perspective" aria-label="Lecture de la carte">
+              <button class="active" data-map-perspective="impact">Empreinte Prime</button>
+              <button data-map-perspective="factual">Marché factuel</button>
+            </div>
+            <div class="map-mode" id="mapModeControls" aria-label="Coloration de la carte" hidden>
+              <button class="active" data-map-mode="integrator">Intégrateur</button>
+              <button data-map-mode="software">Logiciel</button>
+              <button data-map-mode="product">Produit</button>
+              <select id="mapProduct" aria-label="Produit affiché"></select>
+            </div>
           </div>
         </div>
         <div class="map-stage-shell" id="mapStage">
           <div class="map-loading" id="mapLoading"><span></span>Préparation de la carte…</div>
           <svg id="swissMap" role="img" aria-label="Carte des communes de Suisse romande" preserveAspectRatio="xMidYMid meet"></svg>
+          <aside class="map-impact" id="mapImpact">
+            <p>L’empreinte Prime</p>
+            <strong id="mapImpactRatio">1 Romand sur 5</strong>
+            <span>vit dans une commune gérée par Prime</span>
+            <div><b id="mapImpactPopulation">—</b><small> habitants · <span id="mapImpactShare">—</span> de la Romandie</small></div>
+          </aside>
           <div class="map-zoom" aria-label="Contrôles de zoom"><button id="mapZoomIn" aria-label="Zoom avant">+</button><button id="mapZoomOut" aria-label="Zoom arrière">−</button><button id="mapReset" aria-label="Réinitialiser la carte">⌂</button></div>
           <div class="map-tooltip" id="mapTooltip" hidden></div>
         </div>
@@ -131,7 +144,7 @@
   </section>
   <footer class="site-footer" aria-label="Informations légales et techniques">
     <div class="footer-meta">
-      <span>Prime Communes · version 1.0.3</span>
+      <span>Prime Communes · version 1.0.4</span>
       <span class="footer-confidential">Données confidentielles</span>
     </div>
     <div class="footer-legal">
@@ -143,7 +156,7 @@
 </main>
 <div id="drawerRoot"></div>
 <script>
-const fmt=new Intl.NumberFormat('fr-CH'),pct=new Intl.NumberFormat('fr-CH',{minimumFractionDigits:1,maximumFractionDigits:1});let all=[],primeOnly=false,eadminOnly=false,issuesOnly=false,districtsMode=false,marketOnly='',ofsMode=false,sortKey='population',sortDirection='desc',mapGeometry=null,mapMode='integrator',mapViewBox=null,mapInitialViewBox=null,mapDragging=false,mapMoved=false;
+const fmt=new Intl.NumberFormat('fr-CH'),pct=new Intl.NumberFormat('fr-CH',{minimumFractionDigits:1,maximumFractionDigits:1});let all=[],primeOnly=false,eadminOnly=false,issuesOnly=false,districtsMode=false,marketOnly='',ofsMode=false,sortKey='population',sortDirection='desc',mapGeometry=null,mapMode='integrator',mapPerspective='impact',mapProduct='eAdmin',mapViewBox=null,mapInitialViewBox=null,mapDragging=false,mapMoved=false;
 const supplierChoices=['Abraxas','Axians','Ciges','Data','Epsitec','OBT','Ofisa','Prime','SIACG','SIEN','T2i','Talus']; const softwareChoices=['innosolvcity','Urbanus','Calvin','Citizen','ETIC','BDI','Crésus','Epsilon','Ruf'];
 const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const SUPABASE_URL='https://ozdvmllgxduzquiujcbg.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96ZHZtbGxneGR1enF1aXVqY2JnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1NzkwNTIsImV4cCI6MjEwMzE1NTA1Mn0.mVT0_dqcpAzb3QxmC5xDmB8bq7RZrpDd5dpvnGKPaTw';
@@ -157,6 +170,7 @@ function applyData(data,source){
   updateDistrictOptions();
   const solutions=[...new Map(all.filter(x=>x.integrator||x.software).map(x=>{const value=(x.integrator||'')+'|||'+(x.software||''),label=(x.integrator||'À compléter')+' | '+(x.software||'—');return[value,{value,label}]})).values()].sort((a,b)=>a.label.localeCompare(b.label,'fr-CH',{sensitivity:'base'}));
   $('solution').innerHTML='<option value="Tous">Toutes</option>'+solutions.map(x=>`<option value="${esc(x.value)}">${esc(x.label)}</option>`).join('');
+  const products=[...new Set(all.flatMap(x=>x.products||[]))].sort((a,b)=>a.localeCompare(b,'fr-CH',{sensitivity:'base'}));$('mapProduct').innerHTML=products.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');if(products.includes(mapProduct))$('mapProduct').value=mapProduct;
   $('syncText').textContent='Données au '+new Date(data.meta.referenceDate+'T00:00:00').toLocaleDateString('fr-CH')+' · '+source;render();if(mapGeometry)renderMap();
 }
 function mapDb(x){return{id:x.bfs_id,name:x.name,canton:x.canton,market:x.market,districtCode:x.bezirk_code??'',district:x.bezirk??'',expectedPopulation:x.expected_population??0,receivedPopulation:x.received_population,receivedOn:x.received_on??'',comment:x.comment??'',echVersion:x.ech_version??'',missingEwid:x.missing_ewid,ewidErrorRate:x.ewid_error_rate,deliveryStatus:x.delivery_status??'unknown',software:x.software??'',integrator:x.integrator??'',isPrime:x.integrator==='Prime',salesStatus:x.sales_status??'none',notes:x.notes??'',products:x.products??[]}}
@@ -192,17 +206,21 @@ const mapPalettes={
   software:{innosolvcity:'#289cff',Calvin:'#f08a4b',Citizen:'#8c6cff',ETIC:'#36bca5',BDI:'#e76369','Crésus':'#d7a941',Urbanus:'#d15fa4',Epsilon:'#78bc62',Ruf:'#4f7fd5'}
 };
 const mapFallback='#182534',mapWestCantons=new Set(['GE','VD','NE','JU','FR','VS','BE','BS','BL','SO']);
-function mapColor(commune){if(mapMode==='eadmin')return commune.products?.includes('eAdmin')?'#36d494':'#253142';const value=mapMode==='software'?commune.software:commune.integrator;return mapPalettes[mapMode]?.[value]||mapFallback}
+function mapColor(commune){if(mapMode==='product')return commune.products?.includes(mapProduct)?'#36d494':'#253142';const value=mapMode==='software'?commune.software:commune.integrator;return mapPalettes[mapMode]?.[value]||mapFallback}
 function renderMap(){
   if(!mapGeometry||!all.length)return;
-  const lookup=new Map(all.map(x=>[String(x.id),x])),svg=$('swissMap');
-  svg.innerHTML=`<g class="map-context">${mapGeometry.cantons.map(x=>`<path class="map-canton ${mapWestCantons.has(x.code)?'context-west':''}" d="${x.d}" data-canton="${x.code}"></path>`).join('')}</g><g class="map-municipalities">${mapGeometry.municipalities.map(x=>`<path class="map-commune" data-id="${x.id}" d="${x.d}"></path>`).join('')}</g>`;
-  svg.querySelectorAll('.map-commune').forEach(path=>{const commune=lookup.get(path.dataset.id);path.style.fill=commune?mapColor(commune):mapFallback});
-  updateMapSearch();updateMapLegend();$('mapLoading').hidden=true;$('mapCommuneCount').textContent=fmt.format(mapGeometry.meta.municipalityCount);
+  const lookup=new Map(all.map(x=>[String(x.id),x])),svg=$('swissMap'),impact=mapPerspective==='impact';
+  svg.classList.toggle('impact-mode',impact);svg.classList.toggle('factual-mode',!impact);
+  svg.innerHTML=`<defs><linearGradient id="eastFade" gradientUnits="userSpaceOnUse" x1="2590000" x2="2820000"><stop offset="0" stop-color="#07111d" stop-opacity="0"></stop><stop offset="1" stop-color="#07111d" stop-opacity=".94"></stop></linearGradient></defs><image class="map-basemap" href="public/swiss-base.webp" x="2480000" y="-1305000" width="360000" height="260000" preserveAspectRatio="none"></image><rect class="map-east-fade" x="2580000" y="-1305000" width="250000" height="260000" fill="url(#eastFade)"></rect><g class="map-context">${mapGeometry.cantons.map(x=>`<path class="map-canton ${mapWestCantons.has(x.code)?'context-west':''}" d="${x.d}" data-canton="${x.code}"></path>`).join('')}</g><g class="impact-halos"></g><g class="map-municipalities">${mapGeometry.municipalities.map(x=>`<path class="map-commune" data-id="${x.id}" d="${x.d}"></path>`).join('')}</g><g class="impact-dots"></g>`;
+  const halos=svg.querySelector('.impact-halos'),dots=svg.querySelector('.impact-dots');
+  svg.querySelectorAll('.map-commune').forEach(path=>{const commune=lookup.get(path.dataset.id);path.classList.toggle('prime',Boolean(commune?.isPrime));path.style.fill=impact?(commune?.isPrime?'#188bdc':'rgba(10,21,33,.45)'):(commune?mapColor(commune):mapFallback);if(!impact||!commune)return;const box=path.getBBox(),cx=box.x+box.width/2,cy=box.y+box.height/2;if(commune.isPrime){const radius=Math.min(7600,Math.max(1800,1100+Math.sqrt(commune.expectedPopulation||0)*16)),halo=document.createElementNS('http://www.w3.org/2000/svg','circle'),core=document.createElementNS('http://www.w3.org/2000/svg','circle');halo.setAttribute('class','prime-halo');halo.setAttribute('cx',cx);halo.setAttribute('cy',cy);halo.setAttribute('r',radius);core.setAttribute('class','prime-core');core.setAttribute('cx',cx);core.setAttribute('cy',cy);core.setAttribute('r',Math.max(430,radius*.12));halos.append(halo,core)}if(commune.products?.includes('eAdmin')){const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');dot.setAttribute('class','product-dot');dot.setAttribute('cx',cx);dot.setAttribute('cy',cy);dot.setAttribute('r',850);dots.append(dot)}});
+  updateMapImpact();updateMapSearch();updateMapLegend();$('mapLoading').hidden=true;$('mapCommuneCount').textContent=fmt.format(mapGeometry.meta.municipalityCount);
 }
+function updateMapImpact(){const romandie=all.filter(x=>x.market==='Welsch'),prime=romandie.filter(x=>x.isPrime),total=romandie.reduce((sum,x)=>sum+x.expectedPopulation,0),covered=prime.reduce((sum,x)=>sum+x.expectedPopulation,0),share=covered/total*100,ratio=Math.max(1,Math.round(total/covered));$('mapImpactRatio').textContent=`1 Romand sur ${ratio}`;$('mapImpactPopulation').textContent=fmt.format(covered);$('mapImpactShare').textContent=pct.format(share)+'%'}
 function updateMapLegend(){
   if(!all.length)return;const romandie=all.filter(x=>x.market==='Welsch');let entries;
-  if(mapMode==='eadmin'){const count=romandie.filter(x=>x.products?.includes('eAdmin')).length;entries=[['eAdmin',count,'#36d494'],['Sans eAdmin',romandie.length-count,'#253142']]}
+  if(mapPerspective==='impact'){entries=[['Communes Prime',romandie.filter(x=>x.isPrime).length,'#289cff'],['eAdmin',romandie.filter(x=>x.products?.includes('eAdmin')).length,'#36d494'],['Marché romand',romandie.length,'#253142']]}
+  else if(mapMode==='product'){const count=romandie.filter(x=>x.products?.includes(mapProduct)).length;entries=[[mapProduct,count,'#36d494'],[`Sans ${mapProduct}`,romandie.length-count,'#253142']]}
   else{const key=mapMode==='software'?'software':'integrator',counts=new Map();romandie.forEach(x=>{const value=x[key]||'À compléter';counts.set(value,(counts.get(value)||0)+1)});entries=[...counts].sort((a,b)=>b[1]-a[1]).map(([name,count])=>[name,count,mapPalettes[mapMode]?.[name]||mapFallback])}
   $('mapLegend').innerHTML=entries.map(([name,count,color])=>`<span><i style="--legend-color:${color}"></i>${esc(name)} · ${count}</span>`).join('');
 }
@@ -219,6 +237,7 @@ function zoomMap(factor,clientX,clientY){const svg=$('swissMap'),rect=svg.getBou
 function showMapTooltip(event,path){const commune=all.find(x=>String(x.id)===path.dataset.id);if(!commune)return;const tooltip=$('mapTooltip'),stage=$('mapStage'),rect=stage.getBoundingClientRect();tooltip.innerHTML=`<strong>${esc(commune.name)}</strong><span>${esc(commune.canton)} · ${fmt.format(commune.expectedPopulation)} habitants</span><small>${esc(commune.integrator||'Intégrateur à compléter')} · ${esc(commune.software||'logiciel à compléter')}${commune.products?.includes('eAdmin')?' · eAdmin':''}</small>`;tooltip.hidden=false;const left=Math.min(rect.width-230,Math.max(10,event.clientX-rect.left+14)),top=Math.min(rect.height-90,Math.max(10,event.clientY-rect.top+14));tooltip.style.left=left+'px';tooltip.style.top=top+'px'}
 $('mapQuery').addEventListener('input',updateMapSearch);$('mapQuery').addEventListener('keydown',event=>{if(event.key==='Enter'){const query=event.currentTarget.value.trim().toLocaleLowerCase('fr-CH'),exact=all.find(x=>x.market==='Welsch'&&x.name.toLocaleLowerCase('fr-CH')===query),hit=document.querySelector('.map-commune.search-hit'),commune=exact||all.find(x=>String(x.id)===hit?.dataset.id);if(commune)openDrawer(commune)}});
 document.querySelectorAll('[data-map-mode]').forEach(button=>button.onclick=()=>{mapMode=button.dataset.mapMode;document.querySelectorAll('[data-map-mode]').forEach(x=>x.classList.toggle('active',x===button));renderMap()});
+$('mapProduct').addEventListener('change',event=>{mapProduct=event.currentTarget.value;renderMap()});document.querySelectorAll('[data-map-perspective]').forEach(button=>button.onclick=()=>{mapPerspective=button.dataset.mapPerspective;document.querySelectorAll('[data-map-perspective]').forEach(x=>x.classList.toggle('active',x===button));$('mapModeControls').hidden=mapPerspective!=='factual';$('mapImpact').hidden=mapPerspective!=='impact';renderMap()});
 $('swissMap').addEventListener('wheel',event=>{event.preventDefault();zoomMap(event.deltaY<0?.82:1.2,event.clientX,event.clientY)},{passive:false});
 $('swissMap').addEventListener('pointerdown',event=>{mapDragging=true;mapMoved=false;$('swissMap').classList.add('dragging');$('swissMap').setPointerCapture(event.pointerId);$('swissMap').dataset.dragX=event.clientX;$('swissMap').dataset.dragY=event.clientY});
 $('swissMap').addEventListener('pointermove',event=>{const path=event.target.closest?.('.map-commune');if(path&&!mapDragging)showMapTooltip(event,path);else $('mapTooltip').hidden=true;if(!mapDragging)return;const svg=$('swissMap'),rect=svg.getBoundingClientRect(),dx=event.clientX-Number(svg.dataset.dragX),dy=event.clientY-Number(svg.dataset.dragY);if(Math.abs(dx)+Math.abs(dy)>3)mapMoved=true;mapViewBox[0]-=dx*mapViewBox[2]/rect.width;mapViewBox[1]-=dy*mapViewBox[3]/rect.height;svg.dataset.dragX=event.clientX;svg.dataset.dragY=event.clientY;setMapView()});
