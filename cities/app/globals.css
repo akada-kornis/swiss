@@ -97,6 +97,40 @@
 .view-tab:hover{color:#d9e2ed}
 .view-tab.active{color:#fff;background:rgba(24,126,201,.2);box-shadow:inset 0 0 0 1px rgba(74,170,240,.16)}
 
+/* Interactive market map */
+.map-view{padding-bottom:12px}
+.map-intro{display:grid;grid-template-columns:minmax(420px,1fr) minmax(320px,470px);align-items:end;gap:50px;margin-bottom:34px}
+.map-intro-copy{padding:0 0 7px;color:#98a5b7;font-size:16px;line-height:1.65}
+.map-intro-copy p{margin:0}.map-intro-copy .eyebrow{margin-bottom:8px}.map-intro-copy strong{display:block;margin-top:12px;color:#dce5ef;font-size:14px}
+.map-panel{overflow:hidden;border:1px solid var(--line);border-radius:28px;background:rgba(7,11,19,.8);box-shadow:0 32px 80px rgba(0,0,0,.35)}
+.map-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 17px;border-bottom:1px solid rgba(255,255,255,.065)}
+.map-search{display:flex;align-items:center;gap:8px;width:min(360px,45%);height:42px;padding:0 13px;border:1px solid rgba(255,255,255,.075);border-radius:11px;background:#090e18;color:#758297}
+.map-search span{font-size:23px;transform:rotate(-20deg)}.map-search input{width:100%;min-width:0;border:0;outline:0;color:#e8edf5;background:transparent}
+.map-mode{display:flex;gap:4px;padding:4px;border:1px solid rgba(255,255,255,.075);border-radius:11px;background:#090e18}
+.map-mode button{min-height:32px;padding:0 13px;border:0;border-radius:8px;color:#7f8b9f;background:transparent;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.map-mode button.active{color:#dff3ff;background:rgba(18,119,190,.24);box-shadow:inset 0 0 0 1px rgba(74,170,240,.13)}
+.map-stage-shell{position:relative;min-height:590px;background:radial-gradient(circle at 29% 42%,rgba(17,105,171,.16),transparent 38%),linear-gradient(145deg,#08121d,#070b12 62%,#0c090d);touch-action:none;user-select:none}
+#swissMap{display:block;width:100%;height:590px;cursor:grab}#swissMap.dragging{cursor:grabbing}
+.map-canton{fill:rgba(111,128,148,.055);stroke:rgba(124,143,165,.16);stroke-width:330}
+.map-canton.context-west{fill:rgba(55,116,158,.055);stroke:rgba(104,157,194,.19)}
+.map-commune{fill:#172231;stroke:rgba(155,177,201,.24);stroke-width:105;cursor:pointer;transition:fill .12s ease,opacity .12s ease,filter .12s ease}
+.map-commune:hover,.map-commune.focused{stroke:#dceeff;stroke-width:420;filter:brightness(1.35);opacity:1}
+.map-commune.dimmed{opacity:.09}.map-commune.search-hit{stroke:#fff;stroke-width:500;filter:drop-shadow(0 0 900px rgba(87,189,255,.9))}
+.map-loading{position:absolute;z-index:3;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;color:#7e8c9f;font-size:12px;background:#080e17}.map-loading span{width:9px;height:9px;border-radius:50%;background:#45d99b;box-shadow:0 0 16px rgba(69,217,155,.65);animation:map-pulse 1s ease-in-out infinite alternate}@keyframes map-pulse{to{opacity:.4;transform:scale(.72)}}
+.map-zoom{position:absolute;z-index:2;right:16px;top:16px;display:grid;overflow:hidden;border:1px solid rgba(255,255,255,.1);border-radius:11px;background:rgba(7,12,20,.84);backdrop-filter:blur(12px)}
+.map-zoom button{width:38px;height:36px;border:0;border-bottom:1px solid rgba(255,255,255,.075);color:#aebccc;background:transparent;font-size:18px;cursor:pointer}.map-zoom button:last-child{border-bottom:0;font-size:15px}.map-zoom button:hover{color:#fff;background:rgba(255,255,255,.06)}
+.map-tooltip{position:absolute;z-index:4;min-width:210px;padding:13px 14px;border:1px solid rgba(255,255,255,.12);border-radius:13px;color:#dce5ef;background:rgba(8,14,23,.94);box-shadow:0 18px 48px rgba(0,0,0,.5);pointer-events:none;backdrop-filter:blur(14px)}
+.map-tooltip strong,.map-tooltip span,.map-tooltip small{display:block}.map-tooltip strong{font-size:14px}.map-tooltip span{margin-top:4px;color:#8291a4;font-size:11px}.map-tooltip small{margin-top:8px;color:#64b8ec;font-size:10px}
+.map-footer{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:14px 17px;border-top:1px solid rgba(255,255,255,.065);background:rgba(255,255,255,.018)}
+.map-legend{display:flex;flex-wrap:wrap;gap:7px 13px}.map-legend span{display:inline-flex;align-items:center;gap:6px;color:#77869a;font-size:10px}.map-legend i{width:8px;height:8px;border-radius:3px;background:var(--legend-color);box-shadow:0 0 9px color-mix(in srgb,var(--legend-color),transparent 55%)}
+.map-source{flex:0 0 auto;color:#566579;font-size:9px;white-space:nowrap}
+@media(max-width:900px){.map-intro{grid-template-columns:1fr}.map-intro-copy{max-width:600px}.map-stage-shell,#swissMap{height:520px;min-height:520px}}
+@media(max-width:680px){
+  .map-intro{display:block;margin-bottom:26px}.map-intro-copy{margin-top:24px;font-size:14px}.map-panel{border-radius:20px}
+  .map-toolbar{display:grid;padding:12px}.map-search{width:100%}.map-mode{width:100%}.map-mode button{flex:1;min-width:0;padding:0 6px}
+  .map-stage-shell,#swissMap{height:480px;min-height:480px}.map-zoom{right:10px;top:10px}.map-footer{display:block;padding:12px}.map-source{display:block;margin-top:11px}
+}
+
 /* Roadmap view */
 .roadmap-view{padding-bottom:12px}
 .roadmap-intro{display:grid;grid-template-columns:minmax(420px,1fr) minmax(320px,470px);align-items:end;justify-content:space-between;gap:50px;margin-bottom:34px}
@@ -152,7 +186,7 @@
   .roadmap-journey{display:flex;overflow-x:auto;padding-bottom:5px;scroll-snap-type:x proximity;scrollbar-width:none}.roadmap-journey::-webkit-scrollbar{display:none}.roadmap-journey li{flex:0 0 150px;scroll-snap-align:start}
 }
 @media(max-width:680px){
-  .topbar{gap:10px}.view-tabs{margin-left:auto}.view-tab{padding:0 9px}.sync-state{margin-left:0}
+  .topbar{gap:9px}.brand{width:104px}.view-tabs{margin-left:auto}.view-tab{padding:0 7px;font-size:11px}.sync-state{display:none}
   .intro-row{margin-bottom:28px}.intro-summary{margin-top:22px}.intro-summary .eyebrow{margin-bottom:8px}
   .roadmap-intro{display:block;margin-bottom:26px}.roadmap-intro-copy{margin-top:24px;font-size:14px}
   .roadmap-principle{grid-template-columns:1fr;gap:8px;padding:16px}.roadmap-stage{padding:18px;border-radius:19px}
