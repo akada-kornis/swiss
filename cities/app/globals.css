@@ -210,3 +210,45 @@
   .roadmap-journey{margin-right:-16px}.roadmap-journey li{flex-basis:136px;padding:14px}.roadmap-journey strong{font-size:15px}
   .roadmap-version{flex-basis:48px;height:48px}.roadmap-stage h2{font-size:24px}.roadmap-done{padding:6px 8px}.completed-items{gap:6px}.completed-items span{padding:7px 9px;font-size:10px}
 }
+
+/* 1.1.3 · Client Prime and municipal product ecosystem */
+.table-wrap table{min-width:1170px}
+.table-wrap th,.table-wrap td{padding-inline:14px}
+.client-heading,.client-cell{width:56px;text-align:center}
+.prime-client-mark{display:block;width:16px;height:24px;margin:auto;object-fit:contain;filter:drop-shadow(0 0 9px rgba(255,75,32,.28))}
+.ecosystem-start{border-left:1px solid rgba(77,162,220,.16);background-image:linear-gradient(90deg,rgba(22,117,184,.045),transparent)}
+.modules-cell{display:flex;align-items:center;gap:8px;min-width:125px}
+.module-mark{display:block;object-fit:contain}
+.modules-cell .eadmin-mark{width:24px;height:24px}
+.clevertax-mark{width:30px;height:24px}
+.module-chip{display:inline-block;padding:4px 6px;border:1px solid rgba(255,255,255,.08);border-radius:7px;color:#8fa0b4;font-size:9px}
+.drawer-title>div{min-width:0}
+.drawer-prime-mark{width:24px;height:37px;margin-left:auto;object-fit:contain;filter:drop-shadow(0 0 12px rgba(255,75,32,.25))}
+.drawer .drawer-ecosystem{margin-top:14px}
+
+/* 1.1.3 · Romandie map: no letterbox, less cinema, more geographic */
+.map-panel.impact-layout{max-width:1120px}
+.map-stage-shell,.impact-layout .map-stage-shell{min-height:700px;background:#e9e6d9}
+#swissMap,.impact-layout #swissMap{height:700px;background:#e9e6d9}
+.map-basemap{opacity:.98;filter:invert(1) brightness(1.025) contrast(.88) saturate(.76) sepia(.18)}
+.map-canton-outline{stroke:rgba(23,58,83,.72);stroke-width:570}
+
+/* 1.1.3 · Statistics: five Prime readings, six territories, vertical mobile flow */
+.stats-kpis{grid-template-columns:1.2fr 1fr 1fr .9fr .9fr}
+.threshold-kpi strong{color:#6ec7ff}
+.stats-story-grid{grid-template-columns:1fr}
+.territory-comparison{grid-template-columns:repeat(6,minmax(0,1fr))}
+@media(max-width:1180px){.stats-kpis{grid-template-columns:repeat(3,1fr)}.territory-comparison{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){.map-stage-shell,#swissMap,.impact-layout .map-stage-shell,.impact-layout #swissMap{height:620px;min-height:620px}}
+@media(max-width:760px){
+  .stats-kpis{grid-template-columns:1fr 1fr}
+  .stats-kpi:first-child{grid-column:1/-1}
+  .territory-comparison{display:grid;grid-template-columns:1fr 1fr;overflow:visible;margin-right:0;padding-right:0;scroll-snap-type:none}
+  .territory-comparison button{min-width:0}
+}
+@media(max-width:680px){
+  .map-panel.impact-layout{max-width:none}
+  .map-stage-shell,#swissMap,.impact-layout .map-stage-shell,.impact-layout #swissMap{height:620px;min-height:620px}
+  .map-impact{bottom:12px;width:calc(100% - 72px);max-width:280px}
+  .table-wrap table{min-width:1170px}
+}
