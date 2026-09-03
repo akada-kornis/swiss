@@ -29,11 +29,12 @@
   border-color: rgba(219, 29, 45, .55) !important;
 }
 
+.metier-cell,
 .erp-cell {
   min-width: 112px;
 }
 
-.erp-mark {
+.solution-mark {
   display: block;
   object-fit: contain;
   object-position: left center;
@@ -50,7 +51,7 @@
   height: 24px;
 }
 
-.drawer-erp-mark {
+.drawer-solution-mark {
   margin-top: 4px;
   max-width: 132px;
   height: 28px;
