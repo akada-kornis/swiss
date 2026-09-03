@@ -29,6 +29,33 @@
   border-color: rgba(219, 29, 45, .55) !important;
 }
 
+.erp-cell {
+  min-width: 112px;
+}
+
+.erp-mark {
+  display: block;
+  object-fit: contain;
+  object-position: left center;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .24));
+}
+
+.proconcept-mark {
+  width: 34px;
+  height: 28px;
+}
+
+.innosolvcity-mark {
+  width: 112px;
+  height: 24px;
+}
+
+.drawer-erp-mark {
+  margin-top: 4px;
+  max-width: 132px;
+  height: 28px;
+}
+
 .filters {
   grid-template-columns: minmax(230px, 1.35fr) .55fr .75fr auto auto auto;
 }
