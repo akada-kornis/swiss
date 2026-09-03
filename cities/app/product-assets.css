@@ -46,9 +46,21 @@
   height: 28px;
 }
 
-.innosolvcity-mark {
-  width: 112px;
+.abacus-mark {
+  width: 26px;
+  height: 27px;
+}
+
+.abacus-module-mark {
+  width: 24px;
   height: 24px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .24));
+}
+
+.innosolvcity-mark {
+  width: 100px;
+  height: 21px;
 }
 
 .drawer-solution-mark {
