@@ -1,27 +1,79 @@
-/* Prime Communes 1.1.7 · mobile filter-button uniformity */
+/* Prime Communes 1.1.7 · polished mobile filter layout */
 
 @media(max-width:680px){
-  /* Four peer toggles = one visual system, 2 × 2. */
+  /* Mobile rule: a real two-column grid, not six inherited desktop tracks. */
+  .filters,
+  .filters.districts-on{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+    padding:14px!important;
+  }
+
+  /* Structural filters keep the full width. */
+  .filters .search,
+  .filters .market-toggles,
+  .filters .canton-district-group,
+  .filters .solution-filter,
+  .filters #issuesOnly{
+    grid-column:1/-1!important;
+    width:100%!important;
+    min-width:0!important;
+  }
+
+  /* Four peer actions = four truly identical cells. */
   .filters #primeOnly,
   .filters #eadminOnly,
   .filters #districtsToggle,
   .filters #logicielsToggle{
     display:flex!important;
-    align-items:center;
-    justify-content:center;
-    width:100%;
-    min-width:0;
-    min-height:44px;
-    height:44px;
-    padding:0 12px;
-    border-radius:12px;
-    font-size:15px;
-    line-height:1;
-    white-space:nowrap;
+    align-items:center!important;
+    justify-content:center!important;
+    width:100%!important;
+    min-width:0!important;
+    height:46px!important;
+    min-height:46px!important;
+    padding:0 10px!important;
+    border-radius:11px!important;
+    font-size:14px!important;
+    font-weight:500!important;
+    line-height:1!important;
+    white-space:nowrap!important;
   }
 
-  .filters #primeOnly{grid-column:1/4}
-  .filters #eadminOnly{grid-column:4/7}
-  .filters #districtsToggle{grid-column:1/4}
-  .filters #logicielsToggle{grid-column:4/7}
+  .filters #primeOnly{grid-column:1!important;grid-row:auto!important}
+  .filters #eadminOnly{grid-column:2!important;grid-row:auto!important}
+  .filters #districtsToggle{grid-column:1!important;grid-row:auto!important}
+  .filters #logicielsToggle{grid-column:2!important;grid-row:auto!important}
+
+  /* Keep the market selector visually balanced with the rest of the panel. */
+  .market-toggles{
+    min-height:44px;
+  }
+  .market-toggles .market-toggle{
+    min-height:36px;
+    font-size:13px;
+  }
+
+  /* Cleaner action row below the filters. */
+  .result-line{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    align-items:center!important;
+    gap:10px!important;
+    margin:16px 2px 12px!important;
+  }
+  .result-line>span{
+    min-width:0;
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:4px 10px;
+  }
+  .result-line .result-export{
+    min-height:42px;
+    padding:0 12px!important;
+    border-radius:11px!important;
+    white-space:nowrap;
+  }
 }
