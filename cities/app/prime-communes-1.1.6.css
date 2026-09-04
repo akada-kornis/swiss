@@ -1,0 +1,108 @@
+/* Prime Communes 1.1.6 · roadmap completion + strict logo sizing */
+
+/* One invariant: every ecosystem logo owns an explicit box. Generic rules never resize logos. */
+.solution-mark,.module-mark{
+  display:block;
+  flex:0 0 auto;
+  object-fit:contain;
+  object-position:left center;
+}
+.innosolvcity-mark{
+  width:100px!important;
+  height:20px!important;
+  max-width:100px!important;
+  max-height:20px!important;
+}
+.proconcept-mark{
+  width:24px!important;
+  height:24px!important;
+  max-width:24px!important;
+  max-height:24px!important;
+}
+.abacus-mark,.abacus-module-mark{
+  width:24px!important;
+  height:24px!important;
+  max-width:24px!important;
+  max-height:24px!important;
+  content:url('../public/assets/logos/abacus.png?v=3');
+}
+.modules-cell .eadmin-mark{
+  width:28px!important;
+  height:18px!important;
+  max-width:28px!important;
+  max-height:18px!important;
+}
+.clevertax-mark{
+  width:30px!important;
+  height:24px!important;
+  max-width:30px!important;
+  max-height:24px!important;
+}
+
+/* Keep all software columns typographically aligned. */
+.metier-cell,.erp-cell,.modules-cell{
+  font-size:13px!important;
+  line-height:24px;
+  vertical-align:middle;
+}
+.modules-cell{min-height:57px;align-items:center}
+.table-wrap th{font-size:11px!important;line-height:1.15}
+.module-chip{font-size:13px!important;line-height:24px!important}
+
+/* Logiciels must always be visible next to Districts on desktop and mobile. */
+#logicielsToggle{
+  display:inline-flex!important;
+  align-items:center;
+  justify-content:center;
+  min-height:42px;
+  white-space:nowrap;
+}
+@media(max-width:680px){
+  .filters #logicielsToggle{grid-column:1/-1}
+}
+
+/* Completed roadmap: 1.0 + 1.1 are both visually done. */
+.roadmap-journey li:first-child strong::after{content:' ✓'}
+.roadmap-grid>.completed-11{
+  grid-column:1/-1;
+  opacity:.72!important;
+  border-color:rgba(153,164,178,.11)!important;
+  background:linear-gradient(145deg,rgba(139,149,162,.065),rgba(139,149,162,.018))!important;
+  box-shadow:none!important;
+}
+.roadmap-grid>.completed-11:before{
+  background:#758294!important;
+  opacity:.45!important;
+}
+.roadmap-grid>.completed-11 .roadmap-version{
+  border-color:rgba(166,176,188,.18)!important;
+  color:#a5afba!important;
+  background:rgba(130,140,152,.09)!important;
+}
+.roadmap-grid>.completed-11 h2{color:#b7c0ca!important}
+.roadmap-grid>.completed-11 .roadmap-done{
+  color:#9da8b4!important;
+  border-color:rgba(156,169,182,.18)!important;
+  background:rgba(140,151,163,.07)!important;
+}
+.roadmap-grid>.completed-11 .roadmap-items{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+}
+.roadmap-grid>.completed-11 .roadmap-items>div{
+  min-width:0;
+}
+.roadmap-journey .journey-done strong{color:#98a3b0!important}
+.roadmap-journey .journey-done span{color:#6e7b8e!important}
+
+/* Stats details remain readable. */
+.territory-comparison span>small,
+.territory-comparison button>small{font-size:11px!important;line-height:1.4}
+.stats-rank-label span{font-size:11px!important}
+.stats-rank>small{font-size:10.5px!important;line-height:1.4}
+
+@media(max-width:1050px){
+  .roadmap-grid>.completed-11 .roadmap-items{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:680px){
+  .roadmap-grid>.completed-11 .roadmap-items{grid-template-columns:1fr}
+}
