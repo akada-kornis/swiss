@@ -1,0 +1,42 @@
+name: Prime Communes 1.1
+
+on:
+  push:
+    paths:
+      - 'cities/**'
+      - '.github/workflows/prime-communes-stabilization.yml'
+  pull_request:
+    paths:
+      - 'cities/**'
+      - '.github/workflows/prime-communes-stabilization.yml'
+
+jobs:
+  contract:
+    name: Static contract
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cities
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check app/prime-communes-1.1.js
+      - run: node --test tests/*.test.mjs
+
+  build:
+    name: Vite production build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cities
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: cities/package-lock.json
+      - run: npm ci
+      - run: npm run build
