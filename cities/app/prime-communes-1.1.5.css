@@ -1,7 +1,7 @@
 @import url('./prime-communes-1.1.6.css?v=2');
 @import url('./prime-communes-1.1.7-mobile.css?v=2');
 
-/* Prime Communes 1.1.5 · visual consistency, software toggle, drawer editor */
+/* Prime Communes 1.1 · stabilized visual layer */
 
 /* Table typography: one visual language across Métier / ERP / Modules. */
 .table-wrap th{
@@ -220,35 +220,4 @@
   .drawer-edit-grid .full-width{grid-column:auto}
   .drawer-module-grid{grid-template-columns:1fr}
   .stats-kpi small,.territory-comparison span>small,.territory-comparison button>small,.stats-rank>small{font-size:11px}
-}
-
-/* Prime Communes 1.1.8 · minimal view by default.
-   The legacy JS state is intentionally inverted here so the default page and
-   Réinitialiser keep ERP + Modules collapsed, while the Logiciels button
-   explicitly expands them. Métier remains visible at all times. */
-.table-wrap:not(.logiciels-hidden) .erp-cell,
-.table-wrap:not(.logiciels-hidden) .modules-cell,
-.table-wrap:not(.logiciels-hidden) th[data-software-column="erp"],
-.table-wrap:not(.logiciels-hidden) th[data-software-column="modules"]{
-  display:none!important;
-}
-.table-wrap.logiciels-hidden .erp-cell,
-.table-wrap.logiciels-hidden .modules-cell,
-.table-wrap.logiciels-hidden th[data-software-column="erp"],
-.table-wrap.logiciels-hidden th[data-software-column="modules"]{
-  display:table-cell!important;
-}
-
-/* The visible button state follows what the user sees, not the internal legacy flag. */
-#logicielsToggle.on{
-  color:#8591a4!important;
-  border-color:rgba(255,255,255,.075)!important;
-  background:#090e18!important;
-  box-shadow:none!important;
-}
-#logicielsToggle:not(.on){
-  color:#c8eaff!important;
-  border-color:rgba(55,162,236,.55)!important;
-  background:rgba(10,102,170,.18)!important;
-  box-shadow:inset 0 0 20px rgba(21,136,220,.1)!important;
 }
