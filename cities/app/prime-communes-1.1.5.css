@@ -215,6 +215,21 @@
   background:rgba(34,145,104,.10);
 }
 
+/* Roadmap 1.5 · infrastructure Prime.
+   Kept in the roadmap visual layer until the 1.5 markup becomes its own component. */
+.roadmap-stage.map-stage .roadmap-items::after{
+  content:"Déplacement serveurs Prime\A Migration de la 1.1 stabilisée vers l’infrastructure Prime, puis choix de l’architecture cible (React/Next, Vite ou autre) et séparation propre du frontend, de la configuration et des secrets.\A Baseline 1.1 propre avant ouverture de la 1.5";
+  display:block;
+  white-space:pre-line;
+  padding:18px 18px 16px;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;
+  color:#8f9caf;
+  background:rgba(255,255,255,.018);
+  font-size:11px;
+  line-height:1.55;
+}
+
 @media(max-width:680px){
   .drawer-edit-grid{grid-template-columns:1fr}
   .drawer-edit-grid .full-width{grid-column:auto}
