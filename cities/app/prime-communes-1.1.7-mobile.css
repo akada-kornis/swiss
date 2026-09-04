@@ -1,0 +1,27 @@
+/* Prime Communes 1.1.7 · mobile filter-button uniformity */
+
+@media(max-width:680px){
+  /* Four peer toggles = one visual system, 2 × 2. */
+  .filters #primeOnly,
+  .filters #eadminOnly,
+  .filters #districtsToggle,
+  .filters #logicielsToggle{
+    display:flex!important;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    min-width:0;
+    min-height:44px;
+    height:44px;
+    padding:0 12px;
+    border-radius:12px;
+    font-size:15px;
+    line-height:1;
+    white-space:nowrap;
+  }
+
+  .filters #primeOnly{grid-column:1/4}
+  .filters #eadminOnly{grid-column:4/7}
+  .filters #districtsToggle{grid-column:1/4}
+  .filters #logicielsToggle{grid-column:4/7}
+}
