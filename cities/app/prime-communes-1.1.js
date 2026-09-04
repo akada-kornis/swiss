@@ -1,9 +1,10 @@
 (() => {
   'use strict';
 
-  // Prime Communes 1.1.5
-  // UI bridge kept separate from the historical single-file prototype so the
-  // live data model can evolve without rewriting the OFS / map foundations.
+  // Prime Communes 1.1 · stabilized bridge
+  // The historical single-file prototype remains the rendering foundation.
+  // This bridge owns the 1.1 data/editor/deep-link behaviour without changing
+  // the visible product contract frozen in snapshot/prime-communes-1.1-final.
 
   const byId = id => document.getElementById(id);
   const truthyParam = value => value === '1' || value === 'true';
@@ -13,13 +14,13 @@
   const validMarkets = new Set(['Welsch', 'Uf Tüütsch', 'Ticino']);
   const EDIT_RPC = 'save_commune_profile_v11';
   let restoringUrlState = false;
-  let logicielsMode = true;
+  let logicielsMode = false;
 
-  // Dedicated 1.1.5 stylesheet: avoids fighting the historical monolithic CSS.
+  // Dedicated stabilization stylesheet. Historical CSS remains the base layer.
   if (!document.querySelector('link[href*="prime-communes-1.1.5.css"]')) {
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = 'app/prime-communes-1.1.5.css?v=1';
+    link.href = 'app/prime-communes-1.1.5.css?v=4';
     document.head.append(link);
   }
 
@@ -64,7 +65,7 @@
     const districts = byId('districtsToggle');
     if (!districts) return;
     const button = document.createElement('button');
-    button.className = 'filter-toggle on';
+    button.className = 'filter-toggle';
     button.id = 'logicielsToggle';
     button.type = 'button';
     button.textContent = 'Logiciels';
@@ -318,7 +319,7 @@
     primeOnly = truthyParam(params.get('prime'));
     eadminOnly = truthyParam(params.get('eadmin'));
     districtsMode = truthyParam(params.get('districts'));
-    logicielsMode = params.get('logiciels') !== '0';
+    logicielsMode = truthyParam(params.get('logiciels'));
     ofsMode = truthyParam(params.get('ofs'));
     issuesOnly = ofsMode && truthyParam(params.get('issues'));
 
@@ -369,7 +370,7 @@
     if (primeOnly) params.set('prime', '1');
     if (eadminOnly) params.set('eadmin', '1');
     if (districtsMode) params.set('districts', '1');
-    if (!logicielsMode) params.set('logiciels', '0');
+    if (logicielsMode) params.set('logiciels', '1');
     if (ofsMode) params.set('ofs', '1');
     if (issuesOnly) params.set('issues', '1');
     if (sortKey !== 'population') params.set('sort', sortKey);
@@ -418,7 +419,7 @@
   });
 
   byId('reset')?.addEventListener('click', () => {
-    logicielsMode = true;
+    logicielsMode = false;
     restoreFilterUi();
     syncAfterEvent(true);
   });
@@ -462,7 +463,13 @@
       items11.append(deepLink);
     }
 
-    // 1.1 is now delivered.
+    if (!findItem(items11, 'Stabilisation 1.1')) {
+      const stabilization = document.createElement('div');
+      stabilization.innerHTML = '<strong>Stabilisation 1.1</strong><span>Refactoring sans changement visuel : état des filtres fiabilisé, base Delivery documentée, permissions DB resserrées et point de restauration GitHub créé.</span><small>Socle préparé pour produits supplémentaires, données financières et migration vers l’infrastructure Prime</small>';
+      items11.append(stabilization);
+    }
+
+    // 1.1 is delivered and stabilized.
     stage11.classList.remove('current');
     stage11.classList.add('completed-11');
     if (!stage11.querySelector('.roadmap-done')) {
@@ -482,7 +489,7 @@
 
   refreshRoadmap();
   const footerVersion = document.querySelector('.footer-meta span:first-child');
-  if (footerVersion) footerVersion.textContent = 'Prime Communes · version 1.1.5';
+  if (footerVersion) footerVersion.textContent = 'Prime Communes · version 1.1.8';
 
   if (all.length) restoreFromUrl();
   else render();
