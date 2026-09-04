@@ -1,0 +1,220 @@
+/* Prime Communes 1.1.5 · visual consistency, software toggle, drawer editor */
+
+/* Table typography: one visual language across Métier / ERP / Modules. */
+.table-wrap th{
+  font-size:11px;
+  line-height:1.15;
+  letter-spacing:.105em;
+}
+.table-wrap td{
+  font-size:13px;
+}
+.metier-cell,.erp-cell,.modules-cell{
+  vertical-align:middle;
+  min-width:120px;
+}
+.modules-cell{
+  min-height:57px;
+  gap:8px;
+}
+.solution-mark,.module-mark{
+  max-height:24px;
+  object-fit:contain;
+  object-position:left center;
+}
+.innosolvcity-mark{
+  width:100px;
+  height:21px;
+}
+.proconcept-mark{
+  width:28px;
+  height:24px;
+}
+.abacus-mark{
+  width:24px;
+  height:24px;
+}
+.abacus-module-mark{
+  width:24px;
+  height:24px;
+}
+.modules-cell .eadmin-mark,
+.clevertax-mark{
+  width:auto;
+  height:24px;
+}
+.module-chip{
+  padding:0;
+  border:0;
+  border-radius:0;
+  color:#98a4b5;
+  background:transparent;
+  font-size:13px;
+  line-height:24px;
+}
+
+/* Logiciels toggle hides ERP + Modules only; Métier always remains visible. */
+.table-wrap.logiciels-hidden .erp-cell,
+.table-wrap.logiciels-hidden .modules-cell,
+.table-wrap.logiciels-hidden th[data-software-column="erp"],
+.table-wrap.logiciels-hidden th[data-software-column="modules"]{
+  display:none;
+}
+.table-wrap.logiciels-hidden table{
+  min-width:980px;
+}
+
+/* Drawer context and editor. */
+.drawer-location{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin:8px 0 0;
+  color:#7d8ba0;
+  font-size:12px;
+}
+.drawer-location img{
+  width:22px;
+  height:22px;
+  object-fit:contain;
+  border-radius:4px;
+  box-shadow:0 2px 7px rgba(0,0,0,.28);
+}
+.drawer-location strong{
+  color:#cbd4df;
+  font-size:12px;
+  font-weight:650;
+}
+.drawer-location .district-name{
+  color:#8e9caf;
+}
+.drawer-edit-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:13px;
+}
+.drawer-edit-grid>label,
+.drawer-client-toggle{
+  margin-top:0!important;
+}
+.drawer-edit-grid .full-width{
+  grid-column:1/-1;
+}
+.drawer-client-toggle{
+  display:flex!important;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  min-height:48px;
+  padding:0 13px;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:11px;
+  color:#a8b4c4!important;
+  background:#080d15;
+}
+.drawer-client-toggle input{
+  width:18px!important;
+  height:18px;
+  margin:0!important;
+  accent-color:#148de0;
+}
+.drawer-module-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  margin-top:7px;
+}
+.drawer-module-option{
+  display:flex!important;
+  align-items:center;
+  gap:9px;
+  min-height:42px;
+  margin:0!important;
+  padding:0 11px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:10px;
+  color:#aab5c4!important;
+  background:#080d15;
+  font-size:12px!important;
+}
+.drawer-module-option input{
+  width:16px!important;
+  height:16px;
+  margin:0!important;
+  accent-color:#148de0;
+}
+.drawer-save-status{
+  min-height:16px;
+  margin:9px 0 0;
+  color:#748398;
+  text-align:center;
+  font-size:11px;
+}
+.drawer-save-status.success{color:#66d4a4}
+.drawer-save-status.error{color:#ff9078}
+.save-button[disabled]{
+  cursor:wait;
+  opacity:.62;
+}
+
+/* Stats detail text was too small on real screens. */
+.stats-kpi small{
+  font-size:12px;
+  line-height:1.45;
+}
+.stats-card .eyebrow{
+  font-size:10px;
+}
+.stats-live{
+  font-size:9px;
+}
+.territory-comparison span>small{
+  margin-top:5px;
+  color:#75859a;
+  font-size:10.5px;
+  line-height:1.35;
+}
+.territory-comparison button>small{
+  margin-top:9px;
+  color:#718198;
+  font-size:10.5px;
+  line-height:1.45;
+}
+.stats-rank-label strong{
+  font-size:13px;
+}
+.stats-rank-label span{
+  font-size:11px;
+}
+.stats-rank>small{
+  font-size:10.5px;
+  line-height:1.4;
+}
+
+/* Roadmap 1.1 completed state. */
+.roadmap-stage.completed-11{
+  border-color:rgba(83,191,150,.17);
+  background:linear-gradient(145deg,rgba(36,142,105,.09),rgba(255,255,255,.018));
+  opacity:.82;
+}
+.roadmap-stage.completed-11:before{
+  background:linear-gradient(90deg,#35ba91,#218ddc);
+}
+.roadmap-stage.completed-11 .roadmap-version{
+  border-color:rgba(72,202,151,.22);
+  color:#70d7ae;
+  background:rgba(34,145,104,.12);
+}
+.roadmap-stage.completed-11 .roadmap-done{
+  color:#7bddb7;
+  border-color:rgba(72,202,151,.22);
+  background:rgba(34,145,104,.10);
+}
+
+@media(max-width:680px){
+  .drawer-edit-grid{grid-template-columns:1fr}
+  .drawer-edit-grid .full-width{grid-column:auto}
+  .drawer-module-grid{grid-template-columns:1fr}
+  .stats-kpi small,.territory-comparison span>small,.territory-comparison button>small,.stats-rank>small{font-size:11px}
+}
