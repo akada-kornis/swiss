@@ -236,6 +236,10 @@
     if (event.target.closest('th.sortable')) syncAfterEvent(true);
   });
 
+  byId('territoryComparison')?.addEventListener('click', event => {
+    if (event.target.closest('button[data-stats-scope]')) syncAfterEvent(true);
+  });
+
   window.addEventListener('popstate', restoreFromUrl);
 
   // Roadmap 1.1 / 1.5 switch agreed in September 2026.
