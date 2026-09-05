@@ -150,7 +150,31 @@
     background:rgba(10,102,170,.10);
   }
 
-  /* Keep live-data control visible without competing with the four nav tabs. */
+  /* Compact the commune column so more of the useful columns fit on Natel.
+     Long names wrap naturally while ordinary names stay on one line. */
+  .table-wrap table{
+    min-width:900px!important;
+  }
+  .table-wrap.logiciels-hidden table{
+    min-width:880px!important;
+  }
+  .table-wrap th:first-child,
+  .table-wrap td:first-child{
+    width:180px!important;
+    min-width:180px!important;
+    max-width:180px!important;
+    white-space:normal!important;
+  }
+  .table-wrap td:first-child strong{
+    display:inline-block;
+    max-width:calc(100% - 45px);
+    vertical-align:middle;
+    white-space:normal!important;
+    overflow-wrap:anywhere;
+    line-height:1.25;
+  }
+
+  /* Keep the live-data control inside the header: only the green status dot is visible. */
   .topbar{
     position:relative;
     overflow:visible!important;
@@ -159,20 +183,24 @@
     display:grid!important;
     place-items:center!important;
     position:absolute!important;
-    top:auto!important;
-    right:16px!important;
-    bottom:-14px!important;
+    top:50%!important;
+    right:6px!important;
+    bottom:auto!important;
     z-index:8!important;
-    width:28px!important;
-    height:28px!important;
-    min-width:28px!important;
+    width:18px!important;
+    height:32px!important;
+    min-width:18px!important;
     padding:0!important;
     margin:0!important;
-    border:1px solid rgba(255,255,255,.10)!important;
-    border-radius:50%!important;
-    background:#090e18!important;
-    box-shadow:0 7px 18px rgba(0,0,0,.35)!important;
+    transform:translateY(-50%)!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
     font-size:0!important;
+  }
+  .sync-state b{
+    display:none!important;
   }
   .sync-state span{
     display:block!important;
@@ -181,6 +209,6 @@
     margin:0!important;
     border-radius:50%!important;
     background:#42d795!important;
-    box-shadow:0 0 10px #42d795!important;
+    box-shadow:0 0 9px rgba(66,215,149,.9)!important;
   }
 }
