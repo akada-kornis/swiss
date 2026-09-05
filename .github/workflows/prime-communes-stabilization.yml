@@ -25,6 +25,7 @@ jobs:
       - run: node --check app/prime-communes-1.1.js
       - run: node --check app/prime-communes-1.1-base.js
       - run: node --check app/prime-communes-map-1.1.js
+      - run: node --check app/prime-communes-maplibre-poc.js
       - run: node --test tests/*.test.mjs
 
   build:
