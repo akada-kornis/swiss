@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises';
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
 test('1.1 bridge keeps the minimal software view as the real default state', async () => {
-  const js = await read('app/prime-communes-1.1.js');
+  const js = await read('app/prime-communes-1.1-base.js');
   assert.match(js, /let logicielsMode = false;/);
   assert.match(js, /logicielsMode = truthyParam\(params\.get\('logiciels'\)\);/);
   assert.match(js, /if \(logicielsMode\) params\.set\('logiciels', '1'\);/);
@@ -27,7 +27,7 @@ test('mobile peer filters remain a strict two-column grid', async () => {
 });
 
 test('roadmap records stabilization and keeps audit in 1.5', async () => {
-  const js = await read('app/prime-communes-1.1.js');
+  const js = await read('app/prime-communes-1.1-base.js');
   assert.match(js, /Stabilisation 1\.1/);
   assert.match(js, /const audit = findItem\(items11, 'Audit trail'\)/);
   assert.match(js, /if \(audit\) items15\.prepend\(audit\)/);
@@ -42,11 +42,29 @@ test('production DB stabilization migration never writes business rows', async (
   assert.doesNotMatch(sql, /\bDELETE\s+FROM\s+public\."GemeindeProfil"/i);
 });
 
-test('current site still loads the 1.1 bridge', async () => {
+test('current site still loads the stable 1.1 entry point', async () => {
   const html = await read('index.html');
+  const loader = await read('app/prime-communes-1.1.js');
   assert.match(html, /<script src="app\/prime-communes-1\.1\.js\?v=1"><\/script>/);
+  assert.match(loader, /prime-communes-1\.1-base\.js/);
+  assert.match(loader, /prime-communes-map-1\.1\.js/);
+  assert.match(loader, /prime-communes-map-1\.1\.css/);
   assert.match(html, /id="communesView"/);
   assert.match(html, /id="mapView"/);
   assert.match(html, /id="statsView"/);
   assert.match(html, /id="roadmapView"/);
+});
+
+test('mobile map layer preserves swisstopo and adds bounded touch navigation', async () => {
+  const js = await read('app/prime-communes-map-1.1.js');
+  const css = await read('app/prime-communes-map-1.1.css');
+  const html = await read('index.html');
+  assert.match(html, /public\/swiss-base\.webp/);
+  assert.match(html, /Surfaces officielles 2026 · swisstopo/);
+  assert.match(js, /two-finger pinch/);
+  assert.match(js, /clampViewBox/);
+  assert.match(js, /focusCommune/);
+  assert.match(js, /double-tap empty map to zoom/);
+  assert.match(css, /background:#09111b!important/);
+  assert.match(css, /touch-action:none!important/);
 });
