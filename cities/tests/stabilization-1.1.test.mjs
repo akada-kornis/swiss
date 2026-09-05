@@ -64,7 +64,7 @@ test('mobile map layer preserves swisstopo and adds bounded touch navigation', a
   assert.match(js, /two-finger pinch/);
   assert.match(js, /clampViewBox/);
   assert.match(js, /focusCommune/);
-  assert.match(js, /double-tap empty map to zoom/);
+  assert.match(js, /now - lastEmptyTap\.time < 320[\s\S]*?zoomMap\(\.62, event\.clientX, event\.clientY\)/);
   assert.match(css, /background:#09111b!important/);
   assert.match(css, /touch-action:none!important/);
 });
