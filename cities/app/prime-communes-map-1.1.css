@@ -1,0 +1,80 @@
+/* Prime Communes 1.1 · mobile map ergonomics.
+   Desktop stays visually unchanged; this layer only fixes Natel navigation. */
+
+@media(max-width:680px){
+  /* Never expose the beige SVG fallback around the swisstopo basemap. */
+  .map-stage-shell,
+  .impact-layout .map-stage-shell,
+  #swissMap,
+  .impact-layout #swissMap{
+    background:#09111b!important;
+  }
+
+  .map-stage-shell{
+    overflow:hidden!important;
+    overscroll-behavior:contain;
+    touch-action:none!important;
+  }
+
+  #swissMap{
+    touch-action:none!important;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+
+  .map-loading{
+    background:#09111b!important;
+    color:#748498!important;
+  }
+
+  /* The information card must never block a pan/pinch gesture underneath. */
+  .map-impact{
+    pointer-events:none!important;
+  }
+
+  /* Slightly larger tap targets while keeping the same visual controls. */
+  .map-zoom button{
+    width:42px!important;
+    height:42px!important;
+  }
+
+  /* Brief help on first use; dismissed as soon as the user interacts. */
+  .map-gesture-hint{
+    position:absolute;
+    z-index:5;
+    left:10px;
+    top:10px;
+    max-width:calc(100% - 72px);
+    padding:7px 10px;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:999px;
+    color:#b8c5d3;
+    background:rgba(7,13,22,.78);
+    box-shadow:0 8px 22px rgba(0,0,0,.28);
+    backdrop-filter:blur(12px);
+    font-size:10px;
+    font-weight:650;
+    letter-spacing:.01em;
+    pointer-events:none;
+    transition:opacity .22s ease,transform .22s ease;
+  }
+
+  .map-gesture-hint.dismissed{
+    opacity:0;
+    transform:translateY(-5px);
+  }
+
+  .map-commune.mobile-focused{
+    stroke:#dff4ff!important;
+    stroke-width:520!important;
+    filter:brightness(1.45) drop-shadow(0 0 480px rgba(71,180,241,.35));
+  }
+
+  .map-tooltip.mobile-search-tooltip{
+    left:10px!important;
+    top:48px!important;
+    right:58px;
+    min-width:0;
+    width:auto;
+  }
+}
