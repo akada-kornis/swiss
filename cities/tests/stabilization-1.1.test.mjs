@@ -48,6 +48,7 @@ test('current site still loads the stable 1.1 entry point', async () => {
   assert.match(html, /<script src="app\/prime-communes-1\.1\.js\?v=1"><\/script>/);
   assert.match(loader, /prime-communes-1\.1-base\.js/);
   assert.match(loader, /prime-communes-map-1\.1\.js/);
+  assert.match(loader, /prime-communes-maplibre-poc\.js/);
   assert.match(loader, /prime-communes-map-1\.1\.css/);
   assert.match(html, /id="communesView"/);
   assert.match(html, /id="mapView"/);
@@ -67,4 +68,19 @@ test('mobile map layer preserves swisstopo and adds bounded touch navigation', a
   assert.match(js, /now - lastEmptyTap\.time < 320[\s\S]*?zoomMap\(\.62, event\.clientX, event\.clientY\)/);
   assert.match(css, /background:#09111b!important/);
   assert.match(css, /touch-action:none!important/);
+});
+
+test('MapLibre POC is parallel, pinned and keeps swisstopo', async () => {
+  const js = await read('app/prime-communes-maplibre-poc.js');
+  const css = await read('app/prime-communes-maplibre-poc.css');
+  assert.match(js, /MAPLIBRE_VERSION = '6\.7\.0'/);
+  assert.match(js, /mapEngineCurrent/);
+  assert.match(js, /mapEngineMapLibre/);
+  assert.match(js, /Carte actuelle · 1\.1/);
+  assert.match(js, /public\/swiss-base\.webp/);
+  assert.match(js, /lv95ToWgs84/);
+  assert.match(js, /openDrawer\(commune\)/);
+  assert.match(js, /engine = 'current'/);
+  assert.match(css, /map-engine-compare/);
+  assert.match(css, /maplibre-stage/);
 });
